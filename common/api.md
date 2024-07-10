@@ -12,5 +12,5 @@ layout:
     visible: true
 ---
 
-# 😀 Common
+# 🥬 API 명세
 

@@ -12,5 +12,5 @@ layout:
     visible: true
 ---
 
-# 😀 Common
+# 😎 기본 VPC 구축
 

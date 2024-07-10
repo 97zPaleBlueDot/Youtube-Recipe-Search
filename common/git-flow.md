@@ -1,9 +1,10 @@
 ---
+description: 레퍼런스 참고해서 새롭게 업뎃중 ...
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,5 +13,8 @@ layout:
     visible: true
 ---
 
-# 😀 Common
+# 📒 Git Flow
 
+## Commit Message Rule
+
+## Branch Naming Rule
