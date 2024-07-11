@@ -1,4 +1,4 @@
-# 기존 데이터 파이프라인
+# 1. 기존 데이터 파이프라인
 
 <figure><img src="../.gitbook/assets/image (5).png" alt=""><figcaption><p>Data Pipeline</p></figcaption></figure>
 
@@ -16,7 +16,6 @@
 
 Problem: 텍스트 전처리 정확도 낮음, 레시피 중복 데이터 존재
 
-추가할 기능:&#x20;
 
 ### 2) 재료의 최저가
 
