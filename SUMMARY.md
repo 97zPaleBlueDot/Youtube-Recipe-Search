@@ -21,6 +21,6 @@
   * [1. 기존 데이터 파이프라인](dataengineering/1-existing_pipeline.md)
   * [2. Text 전처리 정확도 개선](dataengineering/text/2-text.md)
   * [3. ETL 속도 개선](dataengineering/etl/3-etl.md)
-  * [🧀 그 외 문제 해결 및 개선](dataengineering/others/others.md)
-    * [1. 데이터 모델링과 품질 관리](dataengineering/others/1-modeling_and_qa.md)
+  * [4. 그 외 문제 해결 및 개선](dataengineering/others/others.md)
+    * [1) 데이터 모델링과 품질 관리](dataengineering/others/1-modeling_and_qa.md)
 * [🚜 Client와 기획](client/client.md)
