@@ -24,7 +24,6 @@ override.tf.json
 .terragrunt-cache/
 
 # Sensitive files
-terraform.tfvars
 credentials.tfvars
 secrets.tfvars
 

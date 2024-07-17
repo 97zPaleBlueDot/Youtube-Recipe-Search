@@ -1,6 +1,6 @@
 # resources
 resource "aws_instance" "bastion_host" {
-  ami                         = "ami-056a29f2eddc40520"
+  ami                         = "ami-0075013580f6322a1"
   instance_type               = "t2.micro"
   subnet_id                   = var.public_subnet_id
   vpc_security_group_ids      = [var.public_sg_id]
@@ -13,7 +13,7 @@ resource "aws_instance" "bastion_host" {
 }
 
 resource "aws_instance" "django_instance" {
-  ami                         = "ami-056a29f2eddc40520"
+  ami                         = "ami-0075013580f6322a1"
   instance_type               = "t2.micro"
   subnet_id                   = var.public_subnet_id
   vpc_security_group_ids      = [var.django_sg_id]
