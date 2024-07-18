@@ -34,10 +34,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y openssh-client
         mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/deployer2.pem
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+        ssh -i ~/.ssh/deployer2-key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
           cd /path/to/your/project
           git pull origin feature/actionsCICD
           source venv/bin/activate
