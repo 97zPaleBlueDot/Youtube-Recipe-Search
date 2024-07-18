@@ -13,16 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install Client Dependencies
-      run: |
-        cd client/
-        yarn
-
-    - name: Build Client Files
-      run: |
-        cd server/
-        yarn
-        
     - name: Make Tar File
       run: |
         tar -cpvzf ./$GITHUB_SHA.tgz *
