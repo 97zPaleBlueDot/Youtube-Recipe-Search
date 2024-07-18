@@ -32,10 +32,10 @@ jobs:
           ./$GITHUB_SHA.tgz s3://awsbucket.palebluedot.django/build/$GITHUB_SHA.tgz
     
     - name: Code Deploy
-      run: aws deploy create-deployment --application-name django-deploy \
+      run: |
+        aws deploy create-deployment \
+            --application-name django-deploy \
             --file-exists-behavior OVERWRITE \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name store-be-codedeploy-group \
             --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/$GITHUB_SHA.tgz
-
-
