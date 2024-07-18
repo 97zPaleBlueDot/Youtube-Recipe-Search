@@ -13,36 +13,39 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Install Client Dependencies
+      run: |
+        cd client/
+        yarn
+
+    - name: Build Client Files
+      run: |
+        cd server/
+        yarn
+        
+    - name: Make Tar File
+      run: |
+        tar -cpvzf ./$GITHUB_SHA.tgz *
+      shell: bash
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        python-version: '3.10'
-
-    - name: Install dependencies
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: us-west-2
+    
+    - name: Upload to S3
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install --upgrade pip
-        pip install -r requirements.txt
+        aws s3 cp \
+          --region us-west-2 \
+          ./$GITHUB_SHA.tgz s3://awsbucket.palebluedot.django/build/$GITHUB_SHA.tgz
+    
+    - name: Code Deploy
+      run: aws deploy create-deployment --application-name django-deploy \
+            --file-exists-behavior OVERWRITE \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --deployment-group-name store-be-codedeploy-group \
+            --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/$GITHUB_SHA.tgz
 
-    - name: Deploy to EC2
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        EC2_USER: ${{ secrets.EC2_USER }}
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openssh-client
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/deployer2.pem
-        chmod 600 ~/.ssh/deployer2.pem
-        ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
-        ssh -i ~/.ssh/deployer2-key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-          cd /path/to/your/project
-          git pull origin feature/actionsCICD
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python /jaringobi_be/manage.py migrate
-          python /jaringobi_be/manage.py collectstatic --noinput
-          sudo systemctl restart gunicorn
-        EOF
+
