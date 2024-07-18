@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu # 배포할 디렉터리 경로
+    destination: /home/ubuntu/Django # 배포할 디렉터리 경로
 hooks:
   AfterInstall:
-    - location: scripts/after_install.sh
+    - location: /home/ubuntu/Django/scripts/after_install.sh
       timeout: 300
       runas: root
