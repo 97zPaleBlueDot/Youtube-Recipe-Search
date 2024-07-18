@@ -44,4 +44,4 @@ jobs:
           python /jaringobi_be/manage.py migrate
           python /jaringobi_be/manage.py collectstatic --noinput
           sudo systemctl restart gunicorn
-EOF
+        EOF
