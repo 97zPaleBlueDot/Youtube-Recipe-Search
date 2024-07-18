@@ -31,8 +31,12 @@ jobs:
         EC2_USER: ${{ secrets.EC2_USER }}
       run: |
         sudo apt-get update
-        sudo apt-get install -y sshpass
-        ssh-agent bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY"); ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST <<EOF
+        sudo apt-get install -y openssh-client
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST <<EOF
           cd /path/to/your/project
           git pull origin feature/actionsCICD
           source venv/bin/activate
