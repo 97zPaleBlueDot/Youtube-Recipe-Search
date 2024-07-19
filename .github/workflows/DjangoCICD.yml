@@ -3,7 +3,10 @@ name: Deploy Django to EC2
 on:
   push:
     branches:
-      - feature/actionsCICD
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   deploy:
