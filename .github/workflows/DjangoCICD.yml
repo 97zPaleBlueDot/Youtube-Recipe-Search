@@ -29,7 +29,7 @@ jobs:
       run: |
         aws s3 cp \
           --region us-west-2 \
-          ./$GITHUB_SHA.tgz s3://awsbucket.palebluedot.django/build/$GITHUB_SHA.tgz
+          ./deploy-package.tgz s3://awsbucket.palebluedot.django/build/deploy-package.tgz
     
     - name: Code Deploy
       run: |
@@ -38,4 +38,4 @@ jobs:
             --file-exists-behavior OVERWRITE \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name store-be-codedeploy-group \
-            --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/$GITHUB_SHA.tgz
+            --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/deploy-package.tgz

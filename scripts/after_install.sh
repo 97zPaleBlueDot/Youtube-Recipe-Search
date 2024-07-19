@@ -4,4 +4,4 @@
 cd /home/ubuntu/Django
 
 # TAR 파일 압축 풀기
-tar -xzf $GITHUB_SHA.tgz
+tar -xzf deploy-package.tgz
