@@ -125,3 +125,34 @@ variable "vpc_id" {
 
 #### 전체적인 디렉토리의 구조는 아래와 같습니다. <br>
 <img src="./tree.png" width="300" height="700">
+
+## 3) 보안 및 Terraform 전용 EC2 인스턴스 구축
+infra 구축 시 협업을 용이하게 진행하고자 인프라 전용 EC2인스턴스를 구성해 사용하고 있습니다.
+
+AWS Credentials, RDS DB_password와 같은 민감한 변수들의 관리를 위해 AWS Secrets Manager를 사용해 관리합니다. 과정은 아래와 같습니다.
+
+Secrets Manager에 암호를 저장 > 시크릿을 가져와 파싱 > 환경변수로 설정
+
+Secrets에서 값을 가져오는 코드입니다.
+
+```bash
+# /set_aws_env_from_secrets.sh
+# AWS Secrets Manager에서 시크릿을 가져옵니다
+SECRET=$(aws secretsmanager get-secret-value --secret-id $SECRET_NAME --region $REGION | jq -r .SecretString)
+```
+
+이렇게 값을 가져와 환경변수로 설정 후 terraform.tfvars에 값을 집어넣어 변수를 설정해줍니다.
+```bash
+# /generate_tfvars.sh
+#!/bin/bash
+
+# terraform.tfvars 파일에 환경 변수 추가
+cat <<EOF >> ./BackEnd/terraform/terraform.tfvars
+
+# 추가된 환경 변수
+db_username = "$username"
+db_password = "$password"
+EOF
+```
+**정리**<br>
+테라폼 코드를 github에서 가져오고 환경변수를 세팅하여 전체 VPC를 구축하는데 사용하고 있습니다.
