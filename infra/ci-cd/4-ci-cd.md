@@ -1,9 +1,8 @@
 ---
-description: Backend CI/CD 구축
+description: AWS CI/CD 구축
 ---
 
 # 4. CI/CD 구축
-
 ### Backend 서버 CI/CD 구현
 
 목적: Backend repo 코드를 활용한 배포 자동화
