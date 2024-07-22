@@ -12,7 +12,7 @@ CREATE DATABASE jaringobi;
 따로 얻어낸 원천 메뉴명 데이터도 있고, 새롭게 생성될 메뉴도 포함된다(메시지 큐 기반 심화 기능)!*/
 CREATE TABLE IF NOT EXISTS menu (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(64) NOT NULL,
+    name VARCHAR(64) UNIQUE NOT NULL,
     category VARCHAR(64),  -- 음식명 분류
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS menu (
 rank, rating_total_count, discount_rate 컬럼 없앰. */
 CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(1024) NOT NULL,  -- 상품명
+    name VARCHAR(1024) UNIQUE NOT NULL,  -- 상품명
     unit_price FLOAT,  -- 단위 가격
     unit VARCHAR(32),  -- 단위명
     url VARCHAR(2048),  -- 상품URL
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS quantity_conversion (
 CREATE TABLE IF NOT EXISTS cheap_recipe (  -- recipe, youtube_vdo 값을 조인해서 만들어짐
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
-    menu VARCHAR(64) NOT NULL,
+    menu VARCHAR(64) UNIQUE NOT NULL,
     youtube_url VARCHAR(1024) NOT NULL,
     min_total_price FLOAT,  -- 핵심!!
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
