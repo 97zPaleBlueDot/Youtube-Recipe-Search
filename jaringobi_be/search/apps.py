@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class JaringobiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'jaringobi'
+    name = 'search'
