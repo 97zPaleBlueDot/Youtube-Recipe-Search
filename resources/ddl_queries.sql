@@ -1,9 +1,9 @@
 /*psql 접속 후 절차
 1. 데이터베이스 생성 및 접속 전환*/
-CREATE DATABASE raw_data;
-CREATE DATABASE service;
+CREATE DATABASE jaringobi;
 /*  psql 명령 정리
-접속한 데이터베이스 전환: \c raw_data
+접속 시작: psql -U postgres
+접속한 데이터베이스 전환: \c jaringobi
 접속한 데이터베이스 내 모든 테이블 목록 조회: \dt
 */
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS recipe (
     id SERIAL PRIMARY KEY,
     youtube_vdo_id INTEGER NOT NULL,
     menu_id INTEGER NOT NULL,
-    portions INTEGER,  -- 몇 인분인지
+    portions SMALLINT,  -- 몇 인분인지
     FOREIGN KEY (menu_id) REFERENCES menu (id),
     FOREIGN KEY (youtube_vdo_id) REFERENCES youtube_vdo (id));
 
@@ -60,10 +60,10 @@ CREATE TABLE IF NOT EXISTS ingredient (
     id SERIAL PRIMARY KEY,
     alternative_id INTEGER,  -- 대체 가능한 식재료
     product_id INTEGER,  -- 늦게 채워져도 됨, 쿠팡 검색에 없을 수 있어 키 제약 안검
-    name VARCHAR(128) NOT NULL,
-    volume FLOAT,
-    unit VARCHAR(64),
-    quantity VARCHAR(128),
+    name VARCHAR(64) NOT NULL,
+    quantity FLOAT,
+    unit VARCHAR(32),
+    vague VARCHAR(64),
     FOREIGN KEY (alternative_id) REFERENCES ingredient (id));
 
 CREATE TABLE IF NOT EXISTS recipe_ingredient (
