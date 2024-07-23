@@ -21,7 +21,7 @@ resource "aws_instance" "django_instance" {
   key_name                    = aws_key_pair.deployer2.key_name
 
   tags = {
-    Name = "django_server"
+    Name = "django_server2"
   }
 }
 
