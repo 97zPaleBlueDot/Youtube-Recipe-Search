@@ -44,3 +44,10 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+# allowed_ips
+variable "allowed_ips" {
+  description = "List of IPs allowed to access port 9200"
+  type = list(string)
+}
+

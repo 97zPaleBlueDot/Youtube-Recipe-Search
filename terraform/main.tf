@@ -14,6 +14,7 @@ module "security_groups" {
   vpc_id = module.vpc.vpc_id
   public_cidr = var.public_cidr
   vpc_cidr    = var.vpc_cidr
+  allowed_ips = var.allowed_ips
 }
 
 module "instances" {
