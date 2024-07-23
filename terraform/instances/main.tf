@@ -12,7 +12,7 @@ resource "aws_instance" "bastion_host" {
   }
 }
 
-resource "aws_instance" "django_instance" {
+resource "aws_instance" "django_instance2" {
   ami                         = "ami-0075013580f6322a1"
   instance_type               = "t2.micro"
   subnet_id                   = var.public_subnet_id
