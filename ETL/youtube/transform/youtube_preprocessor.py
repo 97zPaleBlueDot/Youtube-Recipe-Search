@@ -1,9 +1,14 @@
 import os
 import re
+import time
 from datetime import datetime, timedelta
 
 import google.generativeai as genai
 from dotenv import load_dotenv
+from google.api_core import exceptions
+
+from . import SYSTEM_PROMPT
+from .utils import parse_json
 
 
 class YoutubePreprocessor:
@@ -13,11 +18,16 @@ class YoutubePreprocessor:
 
     def set_gemini_api(self, n):
         load_dotenv("../../../resources/secret.env")
-        self.GOOGLE_API_KEY = os.getenv(f"GOOGLE_API_KEY{n}")
+        self.GOOGLE_API_KEY = os.environ.get(f"GOOGLE_API_KEY{n}", None)
+        if self.GOOGLE_API_KEY is None:
+            raise ValueError("GOOGLE_API_KEY is not set.")
         genai.configure(api_key=self.GOOGLE_API_KEY)
         self.gemini = genai.GenerativeModel("gemini-pro")
 
-    def convert_to_number(self, text):
+    def preprocess(self, text) -> str:
+        return str(text).strip()
+
+    def convert_to_number(self, text) -> int:
         if text is not None:
             try:
                 number_string = ""
@@ -34,6 +44,7 @@ class YoutubePreprocessor:
                 if text[-1] == "M":
                     number *= 10000
                 return int(number)
+
             except Exception as e:
                 print(e)
                 print("text:", text)
@@ -91,91 +102,45 @@ class YoutubePreprocessor:
         except ValueError:
             print("다른 형식 처리 중 에러 발생")
             print(text)
-
         return None
 
-    def query_to_gemini(self, gemini, query_string):
-        response = gemini.generate_content(query_string)
+    def postprocess(self, text: str) -> tuple[int, list[dict]]:
+        parsed_json = parse_json(text)
+        portions = int(parsed_json["portions"]) if "portions" in parsed_json else 1
+        ingredient_info = parsed_json["items"] if "items" in parsed_json else []
+        return portions, ingredient_info
+
+    def _query_to_gemini(self, gemini, video_text):
+        response = gemini.generate_content(SYSTEM_PROMPT + video_text)
         return response.text
 
-    def is_recipe(self, text):
-        return "재료" in text
+    def _inference(self, video_text: str, max_retry: int = 3) -> tuple[int, list[dict]]:
+        count = 0
+        while count < max_retry:
+            try:
+                if True:  # TODO: Fix validate logic
+                    return self._query_to_gemini(self.gemini, video_text)
 
-    def is_korean(self, text):
-        return re.search("[가-힣]", text)
+            except exceptions.InvalidArgument as e:
+                print(f"잘못된 인자: {e}")
+            except exceptions.ResourceExhausted as e:
+                print(f"리소스 소진 (할당량 초과): {e}")
+            except exceptions.PermissionDenied as e:
+                print(f"권한 거부 (API 키 문제 등): {e}")
+            except exceptions.BadRequest as e:
+                print(f"잘못된 요청: {e}")
+            except exceptions.ServiceUnavailable as e:
+                print(f"서비스 불가: {e}")
+            except exceptions.DeadlineExceeded as e:
+                print(f"요청 시간 초과: {e}")
+            except Exception as e:
+                print(f"알 수 없는 오류 발생: {e}")
+            finally:
+                count += 1
+                time.sleep(3)
+        return None
 
-    def split_text(self, text):
-        if "," in text:
-            result = text.split(",")
-            if len(result) == 2:
-                return result[0].strip(), result[1].strip()
-        return None, None
-
-    def contains_korean_and_digit(self, text):
-        korean_pattern = re.compile("[ㄱ-ㅎㅏ-ㅣ가-힣]")
-        digit_pattern = re.compile("[0-9]")
-
-        has_korean = korean_pattern.search(text) is not None
-        has_digit = digit_pattern.search(text) is not None
-
-        return has_korean and has_digit
-
-    def contains_english_and_digit(self, text):
-        digit_pattern = re.compile("[0-9]")
-        english_pattern = re.compile("[a-zA-Z]")
-
-        has_digit = digit_pattern.search(text) is not None
-        has_english = english_pattern.search(text) is not None
-
-        return has_digit and has_english
-
-    def convert_to_only_korean(self, text):
-        return re.sub("[^ㄱ-ㅎㅏ-ㅣ가-힣]", "", text)
-
-    def is_ingredient_and_amount(self, ingredient_name, ingredient_amount):
-        if (
-            ingredient_name
-            and ingredient_amount
-            and isinstance(ingredient_name, str)
-            and isinstance(ingredient_amount, str)
-        ):
-            if (
-                ingredient_name
-                and "재료" not in ingredient_name
-                and len(ingredient_name) < 128
-                and len(ingredient_amount) < 128
-            ):
-                if self.contains_korean_and_digit(
-                    ingredient_amount
-                ) or self.contains_english_and_digit(ingredient_amount):
-                    return True
-        return False
-
-    def convert_to_ingredient_and_amount(self, video_text):
-        try:
-            if self.is_recipe(video_text):
-                ingredient_and_amount_list = []
-
-                query_string = f'"{video_text}"에서 만약 음식재료명과 첨가량에 대한 정보가 있다면 "재료명1,첨가량1\n재료명2,첨가량2\n재료명3,첨가량3,..."와 같은 포맷으로 문자열만 알려줘.'
-                gemini_output = self.query_to_gemini(self.gemini, query_string)
-
-                text_lines = gemini_output.split("\n")
-                for text_line in text_lines:
-                    ingredient_name, ingredient_amount = self.split_text(text_line)
-                    if self.is_ingredient_and_amount(
-                        ingredient_name, ingredient_amount
-                    ):
-                        ingredient_name = self.convert_to_only_korean(ingredient_name)
-                        ingredient_and_amount_list.append(
-                            [ingredient_name, ingredient_amount]
-                        )
-
-                return ingredient_and_amount_list
-
-        except Exception as e:
-            print("에러 발생")
-            print(e)
-            raise
-
-    def preprocess_text(self, text):
-        return str(text).strip()
+    def inference(self, video_text: str) -> tuple[int, list[dict]]:
+        gemini_output = self._inference(video_text)
+        portions, ingredient_info = self.postprocess(gemini_output)
+        return portions, ingredient_info
