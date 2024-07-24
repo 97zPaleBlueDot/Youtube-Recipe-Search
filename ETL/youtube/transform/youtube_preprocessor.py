@@ -13,15 +13,15 @@ from .utils import parse_json
 
 class YoutubePreprocessor:
     def __init__(self):
-        self.GOOGLE_API_KEY = None
+        self.GEMINI_API_KEY = None
         self.gemini = None
 
     def set_gemini_api(self, n):
         load_dotenv("../../../resources/secret.env")
-        self.GOOGLE_API_KEY = os.environ.get(f"GOOGLE_API_KEY{n}", None)
-        if self.GOOGLE_API_KEY is None:
-            raise ValueError("GOOGLE_API_KEY is not set.")
-        genai.configure(api_key=self.GOOGLE_API_KEY)
+        self.GEMINI_API_KEY = os.environ.get(f"GEMINI_API_KEY{n}", None)
+        if self.GEMINI_API_KEY is None:
+            raise ValueError("GEMINI_API_KEY is not set.")
+        genai.configure(api_key=self.GEMINI_API_KEY)
         self.gemini = genai.GenerativeModel("gemini-pro")
 
     def preprocess(self, text) -> str:
