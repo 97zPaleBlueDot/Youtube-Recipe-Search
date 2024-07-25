@@ -31,7 +31,7 @@ NOT_FOUND(404, "Not Found"),
 UNEXPECTED(500, "This request cannot be processed.")
 ```
 
-### `GET` /home
+### `GET` /api/home
 
 <aside>
 📝 메인 페이지를 불러온다.
@@ -41,7 +41,7 @@ UNEXPECTED(500, "This request cannot be processed.")
     - Start Line
         
         ```bash
-        GET /home HTTP/1.1
+        GET /api/home HTTP/1.1
         ```
         
     - Header
@@ -56,7 +56,7 @@ UNEXPECTED(500, "This request cannot be processed.")
     - Header
     - Body
 
-### `POST` /search
+### `GET` /api/search
 
 <aside>
 📝 사용자가 검색한 메뉴의 최저가 유튜브 레시피를 보여 준다.
@@ -65,12 +65,11 @@ UNEXPECTED(500, "This request cannot be processed.")
 - Request
     - Start Line
         ```bash
-        POST /search HTTP/1.1
+        GET /api/search HTTP/1.1
         ```
     - Header
     - Body
         ```json
-        "menu_name" : string      // required, string, DB에 없는 값!
         ```
         
 - Response
@@ -82,27 +81,24 @@ UNEXPECTED(500, "This request cannot be processed.")
         ```
     - Header
     - Body
-        ```json
-        {
-          "youtube_url" : string, // required, 유튜브 영상 링크
-          "total_price" : float, // required, 최종 가격
-        	"ingredients" : [
-                      {
-                        "name" : string, // required, 재료명
-                        "unit_price" : float, // 단위 가격
-                        "price" : float, // 상품 가격
-                        "quantity" : float, // 용량
-                        "unit" : string, // 재료 단위
-                        "product_url" : string // 상품 url
-                        "img_url" : string // 상품 이미지
-                      },
-                      ...
-        	], // 재료
-        	"ingredients_without_unit" : [
-        	  {
-                    "name" : string,
-                    "vague" : string
-                  },
-        	] // 변환된 양+단위 정보가 없는 재료
-        }
-        ```
+      ```json
+      {
+        "recipe": {
+            "ingredients": [
+                {
+                    "cheapest_product_id": int,
+                    "name": string,
+                    "quantity": float,
+                    "unit": string,
+                    "vague": string,
+                    "recipe": int,
+                },
+            ],
+            "portions": int,  //id
+            "youtube_vdo": int //id
+        },
+        "menu": string,
+        "youtube_url": string,
+        "min_total_price": float
+      }
+      ```
