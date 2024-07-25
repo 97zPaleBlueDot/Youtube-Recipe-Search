@@ -25,19 +25,18 @@ if __name__ == "__main__":
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL:", error)
 
-    youtubeCrawler = YoutubeCrawler()
-    youtubeCrawler.set_webdriver()
+    youtube_crawler = YoutubeCrawler()
+    youtube_crawler.set_webdriver()
 
-    youtubePreprocessor = YoutubePreprocessor()
-    youtubePreprocessor.set_gemini_api(0)
+    youtube_preprocessor = YoutubePreprocessor()
+    youtube_preprocessor.set_gemini_api(0)
 
-    youtubeLoader = YoutubeLoader(conn=conn, cursor=cursor)
+    youtube_loader = YoutubeLoader(conn=conn, cursor=cursor)
 
-    menu_id_and_name_list = youtubeCrawler.get_menu_id_and_name_list(cursor=cursor)
+    menu_id_and_name_list = youtube_crawler.get_menu_id_and_name_list(cursor=cursor)
 
     for n in range(5):
-        youtubeCrawler.set_youtube_api(n)
-        # youtubePreprocessor.set_gemini_api(n)
+        youtube_crawler.set_youtube_api(n)
         for i in range(
             n * 100, len(menu_id_and_name_list)
         ):  # api 당 최대 100개의 음식명 검색 가능.
@@ -46,7 +45,7 @@ if __name__ == "__main__":
             menu_id = menu_id_and_name_list[i][0]
             menu_name = menu_id_and_name_list[i][1]
             try:
-                video_link_list = youtubeCrawler.search_menu_name(menu_name)
+                video_link_list = youtube_crawler.search_menu_name(menu_name)
             except Exception:
                 break
 
@@ -65,49 +64,58 @@ if __name__ == "__main__":
                         video_views_count,
                         video_uploaded_date,
                         video_text,
-                    ) = youtubeCrawler.get_video_infos(video_link)
+                    ) = youtube_crawler.get_video_infos(video_link)
                 except Exception:
-                    youtubeCrawler.set_webdriver()
+                    youtube_crawler.set_webdriver()
                     continue
                 time.sleep(0.01)
 
                 # 채널 관련 데이터
-                channel_link = youtubePreprocessor.preprocess_text(channel_link)
-                channel_name = youtubePreprocessor.preprocess_text(channel_name)
-                channel_img = youtubePreprocessor.preprocess_text(channel_img)
-                channel_subscribers_count = youtubePreprocessor.convert_to_number(
+                channel_link = youtube_preprocessor.preprocess(channel_link)
+                channel_name = youtube_preprocessor.preprocess(channel_name)
+                channel_img = youtube_preprocessor.preprocess(channel_img)
+                channel_subscribers_count = youtube_preprocessor.convert_to_number(
                     channel_subscribers_count.strip()[:-1]
                 )
 
                 # 유튜브 비디오 관련 데이터
-                video_link = youtubePreprocessor.preprocess_text(video_link)
-                video_title = youtubePreprocessor.preprocess_text(video_title)
-                video_thumbnail = youtubePreprocessor.preprocess_text(video_thumbnail)
-                video_thumbsup_count = youtubePreprocessor.convert_to_number(
+                video_link = youtube_preprocessor.preprocess(video_link)
+                video_title = youtube_preprocessor.preprocess(video_title)
+                video_thumbnail = youtube_preprocessor.preprocess(video_thumbnail)
+                video_thumbsup_count = youtube_preprocessor.convert_to_number(
                     video_thumbsup_count
                 )
-                video_views_count = youtubePreprocessor.convert_to_number(
+                video_views_count = youtube_preprocessor.convert_to_number(
                     video_views_count
                 )
-                video_uploaded_date = youtubePreprocessor.convert_to_date(
+                video_uploaded_date = youtube_preprocessor.convert_to_date(
                     video_uploaded_date
                 )
-                video_text = youtubePreprocessor.preprocess_text(video_text)
+                video_text = youtube_preprocessor.preprocess(video_text)
 
-                # 레시피 관련 데이터. 예) [[재료명1, 첨가량1], [재료명2, 첨가량2], ...]
-                ingredient_and_amount_list = (
-                    youtubePreprocessor.convert_to_ingredient_and_amount(video_text)
-                )
+                # 레시피 관련 데이터.
+                # 예시
+                # portions: int = 1
+                # ingredient_info: list[dict]
+                # [
+                #    {'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': ''},
+                #    {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': ''},
+                #    {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': ''},
+                #    {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금'},
+                #    {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': ''},
+                #    ...
+                # ]
+                portions, ingredient_info = youtube_preprocessor.inference(video_text)
 
                 # db write 코드 작성
                 try:
-                    channel_id = youtubeLoader.write_to_channel(
+                    channel_id = youtube_loader.write_to_channel(
                         name=channel_name,
                         url=channel_link,
                         subscribers_count=channel_subscribers_count,
                         img_src=channel_img,
                     )
-                    youtube_video_id = youtubeLoader.write_to_youtube_video(
+                    youtube_video_id = youtube_loader.write_to_youtube_video(
                         channel_id=channel_id,
                         title=video_title,
                         url=video_link,
@@ -116,24 +124,26 @@ if __name__ == "__main__":
                         thumbsup_count=video_thumbsup_count,
                         uploaded_date=video_uploaded_date,
                     )
-                    recipe_id = youtubeLoader.write_to_recipe(
+                    recipe_id = youtube_loader.write_to_recipe(
                         youtube_video_id=youtube_video_id,
                         menu_id=menu_id,
                         full_text=video_text,
                     )
-                    if ingredient_and_amount_list:
-                        for k in range(len(ingredient_and_amount_list)):
-                            ingredient_name = ingredient_and_amount_list[k][0]
-                            ingredient_vague = ingredient_and_amount_list[k][1]
-                            youtubeLoader.write_to_ingredient(
+                    if ingredient_info:
+                        for k in range(len(ingredient_info)):
+                            ingredient_name = ingredient_info[k]["ingredient"]
+                            quantity = ingredient_info[k]["quantity"]
+                            unit = ingredient_info[k]["unit"]
+                            vague = ingredient_info[k]["vague"]
+                            # TODO: db 쿼리 수정
+                            youtube_loader.write_to_ingredient(
                                 recipe_id=recipe_id,
                                 name=ingredient_name,
-                                vague=ingredient_vague,
                             )
                 except Exception as e:
                     print(f"에러 발생 : {e}")
 
-    youtubeCrawler.quit_webdriver()
+    youtube_crawler.quit_webdriver()
 
     if conn:
         cursor.close()
