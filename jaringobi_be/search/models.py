@@ -127,7 +127,8 @@ class DjangoSession(models.Model):
 class Ingredient(models.Model):
     id = models.AutoField(primary_key=True)
     alternative = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
-    product_id = models.IntegerField(blank=True, null=True)
+    recipe = models.ForeignKey('Recipe', related_name='ingredients', on_delete=models.DO_NOTHING)
+    cheapest_product_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=64)
     quantity = models.FloatField(blank=True, null=True)
     unit = models.CharField(max_length=32, blank=True, null=True)
@@ -184,24 +185,13 @@ class QuantityConversion(models.Model):
 
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
-    youtube_vdo = models.ForeignKey('YoutubeVdo', models.DO_NOTHING)
+    youtube_vdo = models.OneToOneField('YoutubeVdo', models.DO_NOTHING)  # on_delete=models.CASCADE,
     menu_id = models.IntegerField()
     portions = models.SmallIntegerField(blank=True, null=True)
-    # authors = models.ManyToManyField(Author, through='BookAuthor')
 
     class Meta:
         managed = False
         db_table = 'recipe'
-
-
-class RecipeIngredient(models.Model):
-    id = models.AutoField(primary_key=True)
-    recipe = models.ForeignKey(Recipe, models.DO_NOTHING)
-    ingredient = models.ForeignKey(Ingredient, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'recipe_ingredient'
 
 
 class UnitConversion(models.Model):
@@ -231,7 +221,8 @@ class YoutubeVdo(models.Model):
 
 class CheapRecipe(models.Model):
     id = models.AutoField(primary_key=True)
-    recipe_id = models.IntegerField()  # RecipeIngredient 테이블 통해 재료id 리스트 갖고 오려고.
+    recipe = models.OneToOneField('Recipe', models.DO_NOTHING)  # 재료id 리스트 갖고 오려고.
+    # recipe_id = models.IntegerField()  # 재료id 리스트 갖고 오려고.
     menu = models.CharField(unique=True, max_length=64)  # 화면 렌더링 할 + 쿼리 파라미터로 받아 찾는, 알찬 용도의 메뉴명!
     youtube_url = models.CharField(max_length=1024)  # 화면 렌더링용
     min_total_price = models.FloatField(blank=True, null=True)  # 화면 렌더링용
@@ -241,17 +232,3 @@ class CheapRecipe(models.Model):
     class Meta:
         managed = False
         db_table = 'cheap_recipe'
-
-
-class CheapestProduct(models.Model):  # product 와 ingredient 간 1:1
-    id = models.AutoField(primary_key=True)
-    ingredient_id = models.IntegerField()  # Ingredient 테이블 가서 product_id 갖고 오는 용도 + 바로 위 테이블에서 레시피의 재료 찾을 떄 조건문에서 쓰라고.
-    ingredient = models.CharField(max_length=128)  # 화면 렌더링용
-    product_url = models.CharField(max_length=2048, blank=True, null=True)  # 화면 렌더링용
-    unit_price = models.FloatField(blank=True, null=True)  # 화면 렌더링용
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'cheapest_product'
