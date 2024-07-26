@@ -91,10 +91,10 @@ UNEXPECTED(500, "This request cannot be processed.")
                     "quantity": float,
                     "unit": string,
                     "vague": string,
-                    "recipe": int,
+                    "recipe": int,  //id
                 },
             ],
-            "portions": int,  //id
+            "portions": int,
             "youtube_vdo": int //id
         },
         "menu": string,
