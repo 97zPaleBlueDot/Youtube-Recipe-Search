@@ -112,19 +112,19 @@ class YoutubePreprocessor:
         ingredient_info = parsed_json["items"] if "items" in parsed_json else []
         return portions, ingredient_info
 
-    def _query_to_gemini(self, gemini, video_title: str, video_text: str):
+    def _query_to_gemini(self, gemini, video_text: str, menu_name: str):
         response = gemini.generate_content(
-            SYSTEM_PROMPT + video_title + "\n\n" + RECIPE_PROMPT + video_text
+            SYSTEM_PROMPT + menu_name + "\n\n" + RECIPE_PROMPT + video_text
         )
         return response.text
 
     def _inference(
-        self, video_title: str, video_text: str, max_retry: int = 3
+        self, video_text: str, menu_name: str, max_retry: int = 3
     ) -> tuple[int, list[dict]]:
         count = 0
         while count < max_retry:
             try:
-                return self._query_to_gemini(self.gemini, video_title, video_text)
+                return self._query_to_gemini(self.gemini, video_text, menu_name)
 
             except exceptions.InvalidArgument as e:
                 print(f"잘못된 인자: {e}")
@@ -145,7 +145,7 @@ class YoutubePreprocessor:
                 time.sleep(3)
         return None
 
-    def inference(self, video_title: str, video_text: str) -> tuple[int, list[dict]]:
-        gemini_output = self._inference(video_title, video_text)
+    def inference(self, video_text: str, menu_name: str) -> tuple[int, list[dict]]:
+        gemini_output = self._inference(video_text, menu_name)
         portions, ingredient_info = self.postprocess(gemini_output)
         return portions, ingredient_info

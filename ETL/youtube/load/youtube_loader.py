@@ -70,30 +70,45 @@ class YoutubeLoader:
             self.conn.rollback()
 
     def write_to_ingredient(
-        self, name, quantity, unit, vague, alternative_id=None, cheapest_product_id=None
+        self,
+        name,
+        quantity,
+        unit,
+        vague,
+        recipe_id,
+        alternative_id=None,
+        cheapest_product_id=None,
     ):
         try:
             # Check if the ingredient with the same name, quantity, unit, and vague exists
             self.cursor.execute(
-                "SELECT id FROM ingredient WHERE name = %s AND quantity = %s AND unit = %s AND vague = %s",
-                (name, quantity, unit, vague),
+                "SELECT id FROM ingredient WHERE name = %s AND quantity = %s AND unit = %s AND vague = %s AND recipe_id = %s",
+                (name, quantity, unit, vague, recipe_id),
             )
             existing_ingredient = self.cursor.fetchone()
 
             if existing_ingredient:
                 # If the ingredient already exists, do nothing
                 print(
-                    "Ingredient with the same name, quantity, unit, and vague already exists. Skipping insertion."
+                    "Ingredient with the same name, quantity, unit, vague, and recipe_id already exists. Skipping insertion."
                 )
             else:
                 # If the ingredient doesn't exist, insert new data
                 insert_query = """
-                INSERT INTO ingredient (name, quantity, unit, vague, alternative_id, cheapest_product_id)
-                VALUES (%s, %s, %s, %s, %s, %s) RETURNING id
+                INSERT INTO ingredient (name, quantity, unit, vague, recipe_id, alternative_id, cheapest_product_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id
                 """
                 self.cursor.execute(
                     insert_query,
-                    (name, quantity, unit, vague, alternative_id, cheapest_product_id),
+                    (
+                        name,
+                        quantity,
+                        unit,
+                        vague,
+                        recipe_id,
+                        alternative_id,
+                        cheapest_product_id,
+                    ),
                 )
                 ingredient_id = self.cursor.fetchone()[0]
                 self.conn.commit()
@@ -105,63 +120,4 @@ class YoutubeLoader:
 
         except (Exception, psycopg2.Error) as error:
             print("Error while writing to ingredient table:", error)
-            self.conn.rollback()
-
-    def get_or_create_ingredient(self, name, quantity, unit, vague):
-        try:
-            self.cursor.execute("SELECT id FROM ingredient WHERE name = %s", (name,))
-            existing_ingredient = self.cursor.fetchone()
-            if existing_ingredient:
-                ingredient_id = existing_ingredient[0]
-                print(
-                    "Ingredient already exists. Returning existing ingredient ID:",
-                    ingredient_id,
-                )
-            else:
-                insert_query = "INSERT INTO ingredient (name, quantity, unit, vague) VALUES (%s, %s, %s, %s) RETURNING id"
-                self.cursor.execute(insert_query, (name, quantity, unit, vague))
-                ingredient_id = self.cursor.fetchone()[0]
-                self.conn.commit()
-                print(
-                    "New ingredient data inserted successfully. New ingredient ID:",
-                    ingredient_id,
-                )
-            return ingredient_id
-        except (Exception, psycopg2.Error) as error:
-            print("Error while writing to ingredient table:", error)
-            self.conn.rollback()
-
-    def write_to_recipe_ingredient(
-        self, recipe_id, ingredient_name, quantity, unit, vague
-    ):
-        try:
-            # Check if the relationship already exists
-            ingredient_id = self.get_or_create_ingredient(
-                ingredient_name, quantity, unit, vague
-            )
-            self.cursor.execute(
-                "SELECT id FROM recipe_ingredient WHERE recipe_id = %s AND ingredient_id = %s",
-                (recipe_id, ingredient_id),
-            )
-            existing_relation = self.cursor.fetchone()
-
-            if existing_relation:
-                # If the relationship already exists, return its ID
-                relation_id = existing_relation[0]
-                print(
-                    "Relationship with the same recipe_id and ingredient_id already exists. Returning existing relation ID:",
-                    relation_id,
-                )
-            else:
-                # If the relationship doesn't exist, insert new data and return its ID
-                insert_query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id) VALUES (%s, %s) RETURNING id"
-                self.cursor.execute(insert_query, (recipe_id, ingredient_id))
-                relation_id = self.cursor.fetchone()[0]
-                self.conn.commit()
-                print(
-                    "New relationship data inserted successfully. New relation ID:",
-                    relation_id,
-                )
-        except (Exception, psycopg2.Error) as error:
-            print("Error while writing to recipe_ingredient table:", error)
             self.conn.rollback()

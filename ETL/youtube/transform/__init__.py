@@ -80,8 +80,8 @@ Twin Musicom의 Canon and Variation에는 크리에이티브 커먼즈 저작자
 ---
 
 # Special Instructions
-Below are the titles of recipes. If the recipe title does not match the content, you should respond only "empty" without additional explanation.
-# Recipe Title: """
+Below are the search keyword for the recipe. If the search keyword does not match the content, you should respond only "empty" without additional explanation.
+# Search Keyword: """
 
 RECIPE_PROMPT = """
 # Recipe Text:

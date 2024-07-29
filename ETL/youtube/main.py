@@ -70,6 +70,7 @@ if __name__ == "__main__":
                 except Exception:
                     youtube_crawler.set_webdriver()
                     continue
+
                 time.sleep(0.01)
 
                 # 채널 관련 데이터
@@ -110,7 +111,8 @@ if __name__ == "__main__":
                 print(f"Gemini inference for video_text {video_text}")
 
                 portions, ingredient_info = youtube_preprocessor.inference(
-                    video_title, video_text
+                    video_text,
+                    menu_name,
                 )
                 print(f"portions: {portions}")
                 print(f"ingredient_info: {ingredient_info}")
@@ -138,9 +140,7 @@ if __name__ == "__main__":
                                 quantity=quantity,
                                 unit=unit,
                                 vague=vague,
-                            )
-                            youtube_loader.write_to_recipe_ingredient(
-                                recipe_id, ingredient_name, quantity, unit, vague
+                                recipe_id=recipe_id,
                             )
 
                 except Exception as e:
