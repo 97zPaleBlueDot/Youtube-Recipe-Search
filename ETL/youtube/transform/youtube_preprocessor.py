@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import re
 import time
@@ -7,7 +9,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from google.api_core import exceptions
 
-from . import SYSTEM_PROMPT
+from . import RECIPE_PROMPT, SYSTEM_PROMPT
 from .utils import parse_json
 
 
@@ -110,16 +112,19 @@ class YoutubePreprocessor:
         ingredient_info = parsed_json["items"] if "items" in parsed_json else []
         return portions, ingredient_info
 
-    def _query_to_gemini(self, gemini, video_text):
-        response = gemini.generate_content(SYSTEM_PROMPT + video_text)
+    def _query_to_gemini(self, gemini, video_title: str, video_text: str):
+        response = gemini.generate_content(
+            SYSTEM_PROMPT + video_title + "\n\n" + RECIPE_PROMPT + video_text
+        )
         return response.text
 
-    def _inference(self, video_text: str, max_retry: int = 3) -> tuple[int, list[dict]]:
+    def _inference(
+        self, video_title: str, video_text: str, max_retry: int = 3
+    ) -> tuple[int, list[dict]]:
         count = 0
         while count < max_retry:
             try:
-                if True:  # TODO: Fix validate logic
-                    return self._query_to_gemini(self.gemini, video_text)
+                return self._query_to_gemini(self.gemini, video_title, video_text)
 
             except exceptions.InvalidArgument as e:
                 print(f"잘못된 인자: {e}")
@@ -140,7 +145,7 @@ class YoutubePreprocessor:
                 time.sleep(3)
         return None
 
-    def inference(self, video_text: str) -> tuple[int, list[dict]]:
-        gemini_output = self._inference(video_text)
+    def inference(self, video_title: str, video_text: str) -> tuple[int, list[dict]]:
+        gemini_output = self._inference(video_title, video_text)
         portions, ingredient_info = self.postprocess(gemini_output)
         return portions, ingredient_info

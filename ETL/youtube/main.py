@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import time
 
@@ -97,16 +99,22 @@ if __name__ == "__main__":
                 # 예시
                 # portions: int = 1
                 # ingredient_info: list[dict]
-                # [
-                #    {'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': ''},
-                #    {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': ''},
-                #    {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': ''},
-                #    {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금'},
-                #    {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': ''},
-                #    ...
-                # ]
-                portions, ingredient_info = youtube_preprocessor.inference(video_text)
+                # [{'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': ''},
+                #  {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': ''},
+                #  {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': ''},
+                #  {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금'},
+                #  {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': ''},
+                #  ...]
+                print("*" * 80)
+                print(f"Gemini inference for video_title {video_title}")
+                print(f"Gemini inference for video_text {video_text}")
 
+                portions, ingredient_info = youtube_preprocessor.inference(
+                    video_title, video_text
+                )
+                print(f"portions: {portions}")
+                print(f"ingredient_info: {ingredient_info}")
+                print("*" * 80)
                 # db write 코드 작성
                 try:
                     channel_id = youtube_loader.write_to_channel(

@@ -1,7 +1,12 @@
+from __future__ import annotations
+
 from json_repair import repair_json
 
 
 def parse_json(text: str) -> dict:
+    if text.strip() == "empty":
+        return {}
+
     start = text.find("{")
     end = text.rfind("}")
 
