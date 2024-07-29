@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS menu (
 rank, rating_total_count, discount_rate 컬럼 없앰. */
 CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(1024) UNIQUE NOT NULL,  -- 상품명
+    name VARCHAR(1024) NOT NULL,  -- 상품명
     unit_price FLOAT,  -- 단위 가격
     unit VARCHAR(32),  -- 단위명
     url VARCHAR(2048),  -- 상품URL
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS product (
 
 CREATE TABLE IF NOT EXISTS youtube_vdo (
     id SERIAL PRIMARY KEY,
-    menu_id INTEGER NOT NULL,
+    menu_id INTEGER NOT NULL,  -- 이런건 ETL 로직서 DB Write 하기 전에 쿼리 날려서 찾아야지. ORM이든 SQL이든.
     youtube_url VARCHAR(256) NOT NULL,
     full_text TEXT,  -- 영상 상세 정보 전체 text
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -52,26 +52,22 @@ CREATE TABLE IF NOT EXISTS recipe (
     id SERIAL PRIMARY KEY,
     youtube_vdo_id INTEGER NOT NULL,
     menu_id INTEGER NOT NULL,
-    portions SMALLINT,  -- 몇 인분인지
+    portions SMALLINT,  -- 몇 인분인지. 나중에 응답 JSON애도 추가
     FOREIGN KEY (menu_id) REFERENCES menu (id),
     FOREIGN KEY (youtube_vdo_id) REFERENCES youtube_vdo (id));
 
 CREATE TABLE IF NOT EXISTS ingredient (
     id SERIAL PRIMARY KEY,
+    recipe_id INTEGER NOT NULL,
     alternative_id INTEGER,  -- 대체 가능한 식재료
-    product_id INTEGER,  -- 늦게 채워져도 됨, 쿠팡 검색에 없을 수 있어 키 제약 안검
+    cheapest_product_id INTEGER,  -- 작업 간 종속성 때문에 일단 키 제약 안 검
     name VARCHAR(64) NOT NULL,
     quantity FLOAT,
     unit VARCHAR(32),
     vague VARCHAR(64),
+    FOREIGN KEY (recipe_id) REFERENCES recipe (id),
     FOREIGN KEY (alternative_id) REFERENCES ingredient (id));
 
-CREATE TABLE IF NOT EXISTS recipe_ingredient (
-    id SERIAL PRIMARY KEY,
-    recipe_id INTEGER NOT NULL,
-    ingredient_id INTEGER NOT NULL,
-    FOREIGN KEY (recipe_id) REFERENCES recipe (id),
-    FOREIGN KEY (ingredient_id) REFERENCES ingredient (id));
 
 CREATE TABLE IF NOT EXISTS unit_conversion (
     conversion_id SERIAL PRIMARY KEY,
@@ -86,7 +82,10 @@ CREATE TABLE IF NOT EXISTS quantity_conversion (
     converted_gram FLOAT);
 
 
--- 3) service: ELT -> service
+-- 3) 프로덕션/서비스 레이어: ELT -> 데이터 마트 CTAS 와 유사한 cheap_recipe 테이블
+-- 사용자 요청 있을 때마다 쿼리 날리기엔 상당한 고비용 연산이라 테이블 미리 정의
+-- 차후 phantom read 같은 이슈 미리 고려
+-- 여러 개 recipe 저장할 것 대비해 테이블명을 cheapest로 하지 않음
 CREATE TABLE IF NOT EXISTS cheap_recipe (  -- recipe, youtube_vdo 값을 조인해서 만들어짐
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
@@ -94,13 +93,12 @@ CREATE TABLE IF NOT EXISTS cheap_recipe (  -- recipe, youtube_vdo 값을 조인�
     youtube_url VARCHAR(1024) NOT NULL,
     min_total_price FLOAT,  -- 핵심!!
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (recipe_id) REFERENCES recipe (id));
 
-CREATE TABLE IF NOT EXISTS cheapest_product (  -- product, ingredient를 조인해 만들어짐
-    id SERIAL PRIMARY KEY,
-    ingredient_id INTEGER NOT NULL,
-    ingredient VARCHAR(128) NOT NULL,  -- equals to product name
-    product_url VARCHAR(2048),
-    unit_price FLOAT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+INSERT INTO cheap_recipe(recipe_id, menu, youtube_url, min_total_price) VALUES(2, '김치찌개', 'https://youtu.be/qWbHSOplcvY?si=H4zpVy_W9RCzUDdu', 7000);
+INSERT INTO youtube_vdo(menu_id, youtube_url) VALUES(2, 'https://youtu.be/qWbHSOplcvY?si=H4zpVy_W9RCzUDdu');
+INSERT INTO recipe(youtube_vdo_id, menu_id, portions) VALUES(2, 2, 1);
+INSERT INTO ingredient(recipe_id, name, quantity, unit, vague) VALUES(2, '김치', 100, 'g', null);
+INSERT INTO ingredient(recipe_id, name, quantity, unit, vague) VALUES(2, '고추가루', null, null, '적당량');
