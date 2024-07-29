@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS menu (
 rank, rating_total_count, discount_rate 컬럼 없앰. */
 CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(1024) NOT NULL,  -- 상품명
+    name VARCHAR(1024) UNIQUE NOT NULL,  -- 상품명
     unit_price FLOAT,  -- 단위 가격
     unit VARCHAR(32),  -- 단위명
     url VARCHAR(2048),  -- 상품URL
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS recipe (
     id SERIAL PRIMARY KEY,
     youtube_vdo_id INTEGER NOT NULL,
     menu_id INTEGER NOT NULL,
-    portions SMALLINT,  -- 몇 인분인지. 나중에 응답 JSON애도 추가
+    portions SMALLINT,  -- 몇 인분인지
     FOREIGN KEY (menu_id) REFERENCES menu (id),
     FOREIGN KEY (youtube_vdo_id) REFERENCES youtube_vdo (id));
 
