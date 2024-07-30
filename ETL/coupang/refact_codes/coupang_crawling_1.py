@@ -9,6 +9,8 @@ from urllib.parse import quote
 import requests
 from bs4 import BeautifulSoup
 
+# 메모리 사용량 체크 코드
+# from memory_profiler import profile
 
 # 상품명을 기반으로 쿠팡에서 상품 검색 요청을 보내는 함수
 def ingredientNameRequests(ingredient_name):
@@ -47,14 +49,17 @@ def ingredientNameRequests(ingredient_name):
 
 
 # 쿠팡에서 받은 응답을 파싱하여 상품 세부 정보를 추출하는 함수
-def ingredientsDetailResult(response, ingredient_name, ingredient_result):
+# @profile
+def ingredientsDetailResult(response, ingredient_name):
+    ingredient_result = []
+
     logger = logging.getLogger("ingredientsDetailResult")
     try:
         bsObj = BeautifulSoup(response.content, "html.parser")
         ul = bsObj.find("ul", id="productList")
         lis = ul.find_all("li")
     except Exception:
-        logger.error("Failed to search ingredient_name on coupang")
+        logger.error(f"Failed to search ingredient_name on coupang: {ingredient_name}")
         return ingredient_result
 
     rank_number = 10
@@ -107,7 +112,7 @@ def ingredientsDetailResult(response, ingredient_name, ingredient_result):
             else:
                 ingredient_detail.append(None)
                 ingredient_detail.append(None)
-                ingredient_detail.append(0)
+                ingredient_detail.append(999999999)
 
             badage_rocket = (
                 "로켓배송" if li.find("span", class_="badge rocket") else None
@@ -137,7 +142,10 @@ def ingredientsDetailResult(response, ingredient_name, ingredient_result):
             else:
                 image = None
             ingredient_detail.append(image)
-
+            
+            # 최저가 계산을 위한 로직
+            
+            
             ingredient_result.append(ingredient_detail)
             rank_class_name = None
 
@@ -145,9 +153,7 @@ def ingredientsDetailResult(response, ingredient_name, ingredient_result):
 
             if len(rank_number_list) == 0:
                 return ingredient_result
-    
-    cheapest_ingredient_result = min(ingredient_result,key=lambda x:x[3])
-    return cheapest_ingredient_result
+    return ingredient_result
 
 # 상품명 가져오기 
 
@@ -198,17 +204,17 @@ def import_ingredient_name_table():
         ingredient_name_list = list(set(ingredient_name_list))
         ingredient_name_list.sort()
 
-    print(ingredient_name_list)
+    # print(ingredient_name_list)
 
     return ingredient_name_list
 
 
 # 상품명을 기반으로 상품 정보를 추출 및 변환하는 함수
+# @profile
 def extract_and_transform(ingredient_name_list):
-    ingredient_result = [
+    ingredient_result_fin = [
         [
             "ingredient_name",
-            "rank",
             "time_stamp",
             "product_title",
             "price",
@@ -225,9 +231,15 @@ def extract_and_transform(ingredient_name_list):
         ingredient_response = ingredientNameRequests(ingredient_name)
         
         ingredient_result = ingredientsDetailResult(
-            ingredient_response, ingredient_name, ingredient_result
+            ingredient_response, ingredient_name
         )
-    return ingredient_result
+        # print(f'ingredient: {ingredient_name}')
+        # print(ingredient_result) -> 단위가격
+        ingredient_result.sort(key=lambda x:x[6])
+        if ingredient_result:
+            cheapest_ingredient = ingredient_result[0]
+            ingredient_result_fin.append(cheapest_ingredient)
+    return ingredient_result_fin
 
 
 # 추출 및 변환된 상품 정보를 CSV 파일에 쓰는 함수
