@@ -4,9 +4,12 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import generics
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 
 from .models import CheapRecipe
 from .serializers import CheapRecipeSerializer
+
+from .es import search_fuzzy, search_match, search_term
 
 
 # https://wikidocs.net/70649
@@ -30,3 +33,37 @@ class SearchResponseView(generics.RetrieveAPIView):  # get(read-one)
             except CheapRecipe.DoesNotExist:
                 raise NotFound("Menu not found")
         raise NotFound("Invalid parameter")
+
+        
+class SearchFuzzyMenuView(APIView):
+    def get(self, request, *args, **kwargs):
+        menu = request.query_params.get('menu', None)
+        
+        result = search_fuzzy(menu)
+        
+        if isinstance(result, tuple):
+            return Response({"error": result[1]}, status=result[0])
+        
+        return Response(result)
+    
+class SearchMatchMenuView(APIView):
+    def get(self, request, *args, **kwargs):
+        menu = request.query_params.get('menu', None)
+        
+        result = search_match(menu)
+        
+        if isinstance(result, tuple):
+            return Response({"error": result[1]}, status=result[0])
+        
+        return Response(result)
+    
+class SearchTermMenuView(APIView):
+    def get(self, request, *args, **kwargs):
+        menu = request.query_params.get('menu', None)
+        
+        result = search_term(menu)
+        
+        if isinstance(result, tuple):
+            return Response({"error": result[1]}, status=result[0])
+        
+        return Response(result)
