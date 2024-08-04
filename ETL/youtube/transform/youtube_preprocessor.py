@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import google.generativeai as genai
 from dotenv import load_dotenv
 from google.api_core import exceptions
+import pandas as pd
 
 from . import RECIPE_PROMPT, SYSTEM_PROMPT
 from .utils import parse_json
@@ -17,6 +18,30 @@ class YoutubePreprocessor:
     def __init__(self):
         self.GEMINI_API_KEY = None
         self.gemini = None
+        unit_conversion_df = pd.read_csv("../../data/constant/unit_conversion.csv", encoding="utf-8")
+        quantity_conversion_df = pd.read_csv("../../data/constant/quantity_conversion.csv", encoding="utf-8")
+        
+        self.unit_conversion_dict = unit_conversion_df.set_index('unit_name')[['converted_vol', 'standard_unit']].to_dict(orient='index')
+        self.quantity_conversion_dict = quantity_conversion_df.set_index(['ingredient_name', 'unit_name'])['converted_gram'].to_dict()
+
+    def convert_unit(self, row):
+        vague_unit = row['vague']
+        if vague_unit in self.unit_conversion_dict:
+            converted_vol = self.unit_conversion_dict[vague_unit]['converted_vol']
+            standard_unit = self.unit_conversion_dict[vague_unit]['standard_unit']
+            return pd.Series([float(converted_vol), standard_unit, ''])
+        else:
+            return pd.Series([row['quantity'], row['unit'], row['vague']])
+
+    def convert_quantity(self, row):
+        ingredient_name = row['ingredient']
+        unit_name = row['unit'] if row['unit'] else row['vague']
+        
+        if (ingredient_name, unit_name) in self.quantity_conversion_dict:
+            converted_gram = self.quantity_conversion_dict[(ingredient_name, unit_name)]
+            return pd.Series([converted_gram, 'g', ''])
+        else:
+            return pd.Series([row['quantity'], row['unit'], row['vague']])
 
     def set_gemini_api(self, n):
         load_dotenv("../../../resources/secret.env")
@@ -110,6 +135,13 @@ class YoutubePreprocessor:
         parsed_json = parse_json(text)
         portions = int(parsed_json["portions"]) if "portions" in parsed_json else 1
         ingredient_info = parsed_json["items"] if "items" in parsed_json else []
+        
+        if ingredient_info:
+            ingredients_df = pd.DataFrame(ingredient_info)
+            ingredients_df[['quantity', 'unit', 'vague']] = ingredients_df.apply(self.convert_unit, axis=1)
+            ingredients_df[['quantity', 'unit', 'vague']] = ingredients_df.apply(self.convert_quantity, axis=1)
+            ingredient_info = ingredients_df.to_dict(orient='records')
+            
         return portions, ingredient_info
 
     def _query_to_gemini(self, gemini, video_text: str, menu_name: str):
