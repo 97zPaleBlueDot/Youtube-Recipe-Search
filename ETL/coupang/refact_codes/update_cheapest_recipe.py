@@ -15,7 +15,7 @@ dag =  DAG(
         default_args=default_args,
         description='full refresh cheap_recipe table',
         start_date=datetime(2024,8,1),
-        schedule_interval='@daily',
+        schedule='0 1 * * *',
         catchup=False,
         tags = ['SQL','cheap_recipe']
 )
