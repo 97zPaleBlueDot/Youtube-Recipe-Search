@@ -9,8 +9,26 @@ from urllib.parse import quote
 import requests
 from bs4 import BeautifulSoup
 
-# 메모리 사용량 체크 코드
-# from memory_profiler import profile
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+
+
+
+default_args = {'owner': 'jaringobi',
+        'retries': 1,
+        'retry_delay': timedelta(minutes=1)
+        }
+
+dag =  DAG(
+        dag_id='coupang_crawling',
+        default_args=default_args,
+        description='crawling_coupang_products',
+        start_date=datetime(2024,8,1),
+        schedule='0 0 * * *',
+        catchup=False,
+        tags = ['coupang']
+)
+
 
 # 상품명을 기반으로 쿠팡에서 상품 검색 요청을 보내는 함수
 def ingredientNameRequests(ingredient_name):
@@ -251,9 +269,54 @@ def write_to_csv(ingredient_result):
         csv_writer.writerows(ingredient_result)
     return file_name
 
+# DAG 변환 시 삭제
 if __name__ == "__main__":
     ingredient_name_list = import_ingredient_name_table()
     
     ingredient_result = extract_and_transform(ingredient_name_list)
     write_to_csv(ingredient_result)
     print('fin')
+
+
+# # 상품명 가져오기
+# import_task = PythonOperator(
+#     task_id='import_ingredient_name_table',
+#     python_callable=import_ingredient_name_table,
+#     dag=dag,
+# )
+
+# # 데이터 추출 및 변환
+# extract_transform_task = PythonOperator(
+#     task_id='extract_and_transform',
+#     python_callable=extract_and_transform,
+#     op_args=[import_task.output],
+#     dag=dag,
+# )
+
+# # csv에 추가
+# write_csv_task = PythonOperator(
+#     task_id='write_to_csv',
+#     python_callable=write_to_csv,
+#     op_args=[extract_transform_task.output],
+#     dag=dag,
+# )
+
+# s3에 추가
+# load_s3_task = PythonOperator(
+#     task_id='load_to_s3',
+#     python_callable=load_to_s3,
+#     op_args=[write_csv_task.output],
+#     dag=dag,
+# )
+
+# rds에 추가
+# load_rds_task = PythonOperator(
+#     task_id='load_to_rds',
+#     python_callable=load_to_rds,
+#     op_args=[extract_transform_task.output],
+#     dag=dag,
+# )
+
+#     # Task 의존성 설정
+# import_task >> extract_transform_task >> write_csv_task
+# extract_transform_task >> load_rds_task
