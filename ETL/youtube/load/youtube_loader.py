@@ -76,19 +76,14 @@ class YoutubeLoader:
         unit,
         vague,
         recipe_id,
-        alternative_id=None,
+        alternative_name=None,
         cheapest_product_id=None,
     ):
         try:
-            if alternative_id == "":
-                alternative_id = None
-            if cheapest_product_id == "":
-                cheapest_product_id = None
-
             # Check if the ingredient with the same attributes exists
             self.cursor.execute(
-                "SELECT id FROM ingredient WHERE name = %s AND quantity = %s AND unit = %s AND vague = %s AND recipe_id = %s AND alternative_id = %s AND cheapest_product_id = %s",
-                (name, quantity, unit, vague, recipe_id, alternative_id, cheapest_product_id)
+                "SELECT id FROM ingredient WHERE name = %s AND quantity = %s AND unit = %s AND vague = %s AND recipe_id = %s AND alternative_name = %s AND cheapest_product_id = %s",
+                (name, quantity, unit, vague, recipe_id, alternative_name, cheapest_product_id)
             )
             existing_ingredient = self.cursor.fetchone()
 
@@ -99,12 +94,12 @@ class YoutubeLoader:
             else:
                 # If the ingredient doesn't exist, insert new data
                 insert_query = """
-                INSERT INTO ingredient (name, quantity, unit, vague, recipe_id, alternative_id, cheapest_product_id)
+                INSERT INTO ingredient (name, quantity, unit, vague, recipe_id, alternative_name, cheapest_product_id)
                 VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id
                 """
                 self.cursor.execute(
                     insert_query,
-                    (name, quantity, unit, vague, recipe_id, alternative_id, cheapest_product_id)
+                    (name, quantity, unit, vague, recipe_id, alternative_name, cheapest_product_id)
                 )
                 ingredient_id = self.cursor.fetchone()
                 if ingredient_id is not None:

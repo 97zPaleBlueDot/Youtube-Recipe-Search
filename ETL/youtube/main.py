@@ -100,11 +100,11 @@ if __name__ == "__main__":
                 # 예시
                 # portions: int = 1
                 # ingredient_info: list[dict]
-                # [{'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': '', alternative_id: ''},
-                #  {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': '', alternative_id: ''},
-                #  {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': '', alternative_id: ''},
-                #  {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금', alternative_id: ''},
-                #  {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': '', alternative_id: '고추'},
+                # [{'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': '', alternative_name: ''},
+                #  {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': '', alternative_name: ''},
+                #  {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': '', alternative_name: ''},
+                #  {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금', alternative_name: ''},
+                #  {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': '', alternative_name: '고추'},
                 #  ...]
                 print("*" * 80)
                 print(f"Gemini inference for video_title {video_title}")
@@ -134,7 +134,7 @@ if __name__ == "__main__":
                             quantity = ingredient_info[k]["quantity"]
                             unit = ingredient_info[k]["unit"]
                             vague = ingredient_info[k]["vague"]
-                            alternative_id = ingredient_info[k]["alternative_id"]
+                            alternative_name = ingredient_info[k]["alternative_name"]
 
                             ingredient_id = youtube_loader.write_to_ingredient(
                                 name=ingredient_name,
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                                 unit=unit,
                                 vague=vague,
                                 recipe_id=recipe_id,
-                                alternative_id=alternative_id,
+                                alternative_name=alternative_name,
                             )
 
                 except Exception as e:

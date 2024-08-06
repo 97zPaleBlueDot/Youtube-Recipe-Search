@@ -174,6 +174,7 @@ class YoutubePreprocessor:
                 print(f"알 수 없는 오류 발생: {e}")
             finally:
                 count += 1
+                print(f"Retry count: {count}")
                 time.sleep(3)
         return None
 

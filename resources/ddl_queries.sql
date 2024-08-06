@@ -59,14 +59,13 @@ CREATE TABLE IF NOT EXISTS recipe (
 CREATE TABLE IF NOT EXISTS ingredient (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL,
-    alternative_id INTEGER,  -- 대체 가능한 식재료
+    alternative_name VARCHAR(64),  -- 대체 가능한 식재료
     cheapest_product_id INTEGER,  -- 작업 간 종속성 때문에 일단 키 제약 안 검
     name VARCHAR(64) NOT NULL,
     quantity FLOAT,
     unit VARCHAR(32),
     vague VARCHAR(64),
-    FOREIGN KEY (recipe_id) REFERENCES recipe (id),
-    FOREIGN KEY (alternative_id) REFERENCES ingredient (id));
+    FOREIGN KEY (recipe_id) REFERENCES recipe (id));
 
 
 CREATE TABLE IF NOT EXISTS unit_conversion (
