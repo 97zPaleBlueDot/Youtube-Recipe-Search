@@ -5,7 +5,7 @@ output "bestion_host_ip" {
 
 output "django_instance_ip" {
   description = "Public IP address of the public instance"
-  value       = aws_instance.django_instance.public_ip
+  value       = aws_instance.django_instance2.public_ip
 }
 
 # output "private_instance_ip" {

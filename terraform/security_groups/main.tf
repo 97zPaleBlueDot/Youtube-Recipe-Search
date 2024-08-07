@@ -26,11 +26,19 @@ resource "aws_security_group" "public_sg" {
 resource "aws_security_group" "django_sg" {
   vpc_id = var.vpc_id
 
+# if you use allowed_ips, cidr_blocks = var.allowed_ips
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.public_cidr]
+  }
+  
+  ingress {
+    from_port   = 9200
+    to_port     = 9200
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_ips
   }
   egress {
     from_port   = 0
