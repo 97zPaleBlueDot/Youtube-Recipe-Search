@@ -1,0 +1,44 @@
+name: Deploy Django to EC2
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Make Tar File
+      run: |
+        tar -cpvzf ./deploy-package.tgz *
+      shell: bash
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+    
+    - name: Upload to S3
+      run: |
+        aws s3 cp \
+          --region us-west-2 \
+          ./deploy-package.tgz s3://awsbucket.palebluedot.django/build/deploy-package.tgz
+    
+    - name: Code Deploy
+      run: |
+        aws deploy create-deployment \
+            --application-name django-deploy \
+            --file-exists-behavior OVERWRITE \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --deployment-group-name store-be-codedeploy-group \
+            --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/deploy-package.tgz
