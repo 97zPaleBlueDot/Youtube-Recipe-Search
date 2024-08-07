@@ -83,13 +83,23 @@ class YoutubeLoader:
             # Check if the ingredient with the same attributes exists
             self.cursor.execute(
                 "SELECT id FROM ingredient WHERE name = %s AND quantity = %s AND unit = %s AND vague = %s AND recipe_id = %s AND alternative_name = %s AND cheapest_product_id = %s",
-                (name, quantity, unit, vague, recipe_id, alternative_name, cheapest_product_id)
+                (
+                    name,
+                    quantity,
+                    unit,
+                    vague,
+                    recipe_id,
+                    alternative_name,
+                    cheapest_product_id,
+                ),
             )
             existing_ingredient = self.cursor.fetchone()
 
             if existing_ingredient:
                 # If the ingredient already exists, do nothing
-                print("Ingredient with the same attributes already exists. Skipping insertion.")
+                print(
+                    "Ingredient with the same attributes already exists. Skipping insertion."
+                )
                 return existing_ingredient[0]
             else:
                 # If the ingredient doesn't exist, insert new data
@@ -99,17 +109,28 @@ class YoutubeLoader:
                 """
                 self.cursor.execute(
                     insert_query,
-                    (name, quantity, unit, vague, recipe_id, alternative_name, cheapest_product_id)
+                    (
+                        name,
+                        quantity,
+                        unit,
+                        vague,
+                        recipe_id,
+                        alternative_name,
+                        cheapest_product_id,
+                    ),
                 )
                 ingredient_id = self.cursor.fetchone()
                 if ingredient_id is not None:
                     ingredient_id = ingredient_id[0]
                     self.conn.commit()
-                    print("New ingredient data inserted successfully. New ingredient ID:", ingredient_id)
+                    print(
+                        "New ingredient data inserted successfully. New ingredient ID:",
+                        ingredient_id,
+                    )
                     return ingredient_id
                 else:
                     print("Error: No ID returned after insertion.")
-        
+
         except (Exception, psycopg2.Error) as error:
             print("Error while writing to ingredient table:", error)
             self.conn.rollback()
