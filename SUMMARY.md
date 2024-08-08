@@ -17,6 +17,7 @@
   * [1. 검색 기능 개선](backend/searching/1-searching.md)
     * [1) ElasticSearch 연구](backend/searching/1-1-study_es.md)
     * [2) ElasticSearch 도입을 통한 검색 기능 고도화](backend/searching/1-2-implement_es.md)
+    * [3) ElasticSearch-DB간 메뉴 데이터 동기화 구현](backend/searching/1-3-es_db_sync.md)
   * [2. 웹 배포 및 사용자 공개](backend/release/2-release.md)
     * [1) Public Domain 설정법](backend/release/2-1-public-domain.md)
 * [🧆 DataEngineering](dataengineering/dataengineering.md)
