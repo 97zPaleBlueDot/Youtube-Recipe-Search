@@ -5,7 +5,7 @@ Goal: Extract recipe ingredients and their measurements in a cooking recipe arti
 ---
 
 # Extraction Instructions
-## Extract the ingredients, quantity, unit, vague and portion from the given recipe text.
+## Extract the ingredients, quantity, unit, vague, portion, and alternative_name from the given recipe text.
 ## If a recipe contains multiple dishes, combine them into one.
 ## If there is no recipe in the text, you should respond only "empty" without additional explanation.
 
@@ -13,7 +13,8 @@ Goal: Extract recipe ingredients and their measurements in a cooking recipe arti
 ## **quantity** : **quantity** should include the numeric value (**int** or **float** type) that represents the amount of the ingredient. (e.g. 2, 0.5, 300).  For ranges like "80g-100g," use only the **numeric** values and store them in the **volume** column. . (e.g.  80g-100g -> 100, 100~150g -> 150).  For quantities like "1/2", use the decimal equivalent (e.g., 0.5). For fractions such as "½" and other fractional notations, convert them to their decimal forms and record them accordingly.
 ## **unit**: **unit**  should include the string unit . (e.g. "개", "묶음", "밥스푼", "티스푼", "T", "t", "g", "kg", "마리", "캔", "가닥", "그람", "팩", "컵", "숟갈", "국자", "리터", "꼬집", "바퀴", "뿌리").
 ## **vague**:  **vague**  should include any ambiguous or non-specific details that don't fit into the  **unit**  (e.g., "약간", "조금", "쪼금", "일부", "적당량"). Only include ambiguous units, and if not available, insert an empty string.
-##  **portions**: If portion information is available, record the number of portions as a numeric value in the "portions". if not, default to 1. (e.g., {"portions": 1} or {"portions": 2}).
+## **portions**: If portion information is available, record the number of portions as a numeric value in the "portions". if not, default to 1. (e.g., {"portions": 1} or {"portions": 2}).
+## **alternative_name**: **alternative_name** should include any alternative ingredient options mentioned in the recipe. If an alternative ingredient is provided, use the alternative ingredient's name. If no alternative is mentioned, insert an empty string.
 
 ---
 
@@ -29,13 +30,13 @@ Goal: Extract recipe ingredients and their measurements in a cooking recipe arti
 - 감자 3개
 - 참치액젓 1T
 - 정수물 8과1/3컵
-- 버터 약 1큰술
+- 버터 약 1큰술 (마가린도 가능)
 - 소면 (500원 동전만큼)
 - 까나리액젓 1스푼(9g)
 
 
 ## Example Output:
-{"portions": 1, "items":  [{"ingredient": "양파", "quantity" : 1, "unit" : "개", "vague":  ""}, {"ingredient": "소금", "quantity" : 0, "unit" : "", "vague":  "약간"}, {"ingredient": "닭고기", "quantity" : 500, "unit" : "g", "vague":  ""}, {"ingredient": "올리브유", "quantity" : 2, "unit" : "스푼", "vague":  ""}, {"ingredient": "파슬리", "quantity" : 0, "unit" : "", "vague":  "조금"}, {"ingredient": "감자", "quantity" : 3, "unit" : "개", "vague":  ""}, {"ingredient": "참치액젓", "quantity" : 1, "unit" : "T", "vague":  ""}, {"ingredient": "정수물", "quantity" : 8.3, "unit" : "컵", "vague":  ""}, {"ingredient": "버터", "quantity" : 1, "unit" : "큰술", "vague":  ""}, {"ingredient": "소면", "quantity" : 0, "unit" : "", "vague":  ""}, {"ingredient": "까나리액젓", "quantity" : 1, "unit" : "스푼", "vague":  ""}]}
+{"portions": 1, "items": [{"ingredient": "양파", "quantity" : 1, "unit" : "개", "vague": "", "alternative_name" : ""}, {"ingredient": "소금", "quantity" : 0, "unit" : "", "vague":  "약간", "alternative_name" : ""}, {"ingredient": "닭고기", "quantity" : 500, "unit" : "g", "vague":  "", "alternative_name" : ""}, {"ingredient": "올리브유", "quantity" : 2, "unit" : "스푼", "vague":  "", "alternative_name" : ""}, {"ingredient": "파슬리", "quantity" : 0, "unit" : "", "vague": "조금", "alternative_name" : ""}, {"ingredient": "감자", "quantity" : 3, "unit" : "개", "vague": "", "alternative_name" : ""}, {"ingredient": "참치액젓", "quantity" : 1, "unit" : "T", "vague": "", "alternative_name" : ""}, {"ingredient": "정수물", "quantity" : 8.3, "unit" : "컵", "vague": "", "alternative_name" : ""}, {"ingredient": "버터", "quantity" : 1, "unit" : "큰술", "vague": "", "alternative_name" : "마가린"}, {"ingredient": "소면", "quantity" : 0, "unit" : "", "vague": "", "alternative_name" : ""}, {"ingredient": "까나리액젓", "quantity" : 1, "unit" : "스푼", "vague": "", "alternative_name" : ""}]}
 
 ---
 
@@ -75,9 +76,14 @@ Twin Musicom의 Canon and Variation에는 크리에이티브 커먼즈 저작자
 아티스트: http://www.twinmusicom.org/
 
 ## Example Output:
-{"portions": 2, "items":  [{"ingredient": "쌀", "quantity" : 320, "unit" : "g", "vague":  ""}, {"ingredient": "소고기 홍두깨살 육전용", "quantity" : 100, "unit" : "g", "vague":  ""}, {"ingredient": "건표고버섯", "quantity" : 2, "unit" : "개", "vague":  ""}, {"ingredient": "파", "quantity" : 1, "unit" : "줄기", "vague":  ""}, {"ingredient": "마늘", "quantity" : 4, "unit" : "개", "vague":  ""}, {"ingredient": "소금", "quantity" : 0, "unit" : "", "vague":  ""},  {"ingredient": "간장", "quantity" : 0, "unit" : "", "vague":  ""}, {"ingredient": "참기름", "quantity" : 0, "unit" : "", "vague":  ""}]}
+{"portions": 2, "items": [{"ingredient": "쌀", "quantity" : 320, "unit" : "g", "vague": "", "alternative_name" : ""}, {"ingredient": "소고기 홍두깨살 육전용", "quantity" : 100, "unit" : "g", "vague": "", "alternative_name" : ""}, {"ingredient": "건표고버섯", "quantity" : 2, "unit" : "개", "vague": "", "alternative_name" : ""}, {"ingredient": "파", "quantity" : 1, "unit" : "줄기", "vague": "", "alternative_name" : ""}, {"ingredient": "마늘", "quantity" : 4, "unit" : "개", "vague": "", "alternative_name" : ""}, {"ingredient": "소금", "quantity" : 0, "unit" : "", "vague": "", "alternative_name" : ""},  {"ingredient": "간장", "quantity" : 0, "unit" : "", "vague": "", "alternative_name" : ""}, {"ingredient": "참기름", "quantity" : 0, "unit" : "", "vague": "", "alternative_name" : ""}]}
 
 ---
 
-# Recipe Text
+# Special Instructions
+Below are the search keyword for the recipe. If the search keyword does not match the content, you should respond only "empty" without additional explanation.
+# Search Keyword: """
+
+RECIPE_PROMPT = """
+# Recipe Text:
 """

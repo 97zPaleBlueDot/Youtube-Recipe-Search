@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 import os
 import re
 import time
 from datetime import datetime, timedelta
 
 import google.generativeai as genai
+import pandas as pd
 from dotenv import load_dotenv
 from google.api_core import exceptions
 
-from . import SYSTEM_PROMPT
+from . import RECIPE_PROMPT, SYSTEM_PROMPT
 from .utils import parse_json
 
 
@@ -15,6 +18,38 @@ class YoutubePreprocessor:
     def __init__(self):
         self.GEMINI_API_KEY = None
         self.gemini = None
+        unit_conversion_df = pd.read_csv(
+            "../../data/constant/unit_conversion.csv", encoding="utf-8"
+        )
+        quantity_conversion_df = pd.read_csv(
+            "../../data/constant/quantity_conversion.csv", encoding="utf-8"
+        )
+
+        self.unit_conversion_dict = unit_conversion_df.set_index("unit_name")[
+            ["converted_vol", "standard_unit"]
+        ].to_dict(orient="index")
+        self.quantity_conversion_dict = quantity_conversion_df.set_index(
+            ["ingredient_name", "unit_name"]
+        )["converted_gram"].to_dict()
+
+    def convert_unit(self, row):
+        vague_unit = row["vague"]
+        if vague_unit in self.unit_conversion_dict:
+            converted_vol = self.unit_conversion_dict[vague_unit]["converted_vol"]
+            standard_unit = self.unit_conversion_dict[vague_unit]["standard_unit"]
+            return pd.Series([float(converted_vol), standard_unit, ""])
+        else:
+            return pd.Series([row["quantity"], row["unit"], row["vague"]])
+
+    def convert_quantity(self, row):
+        ingredient_name = row["ingredient"]
+        unit_name = row["unit"] if row["unit"] else row["vague"]
+
+        if (ingredient_name, unit_name) in self.quantity_conversion_dict:
+            converted_gram = self.quantity_conversion_dict[(ingredient_name, unit_name)]
+            return pd.Series([converted_gram, "g", ""])
+        else:
+            return pd.Series([row["quantity"], row["unit"], row["vague"]])
 
     def set_gemini_api(self, n):
         load_dotenv("../../../resources/secret.env")
@@ -108,18 +143,32 @@ class YoutubePreprocessor:
         parsed_json = parse_json(text)
         portions = int(parsed_json["portions"]) if "portions" in parsed_json else 1
         ingredient_info = parsed_json["items"] if "items" in parsed_json else []
+
+        if ingredient_info:
+            ingredients_df = pd.DataFrame(ingredient_info)
+            ingredients_df[["quantity", "unit", "vague"]] = ingredients_df.apply(
+                self.convert_unit, axis=1
+            )
+            ingredients_df[["quantity", "unit", "vague"]] = ingredients_df.apply(
+                self.convert_quantity, axis=1
+            )
+            ingredient_info = ingredients_df.to_dict(orient="records")
+
         return portions, ingredient_info
 
-    def _query_to_gemini(self, gemini, video_text):
-        response = gemini.generate_content(SYSTEM_PROMPT + video_text)
+    def _query_to_gemini(self, gemini, video_text: str, menu_name: str):
+        response = gemini.generate_content(
+            SYSTEM_PROMPT + menu_name + "\n\n" + RECIPE_PROMPT + video_text
+        )
         return response.text
 
-    def _inference(self, video_text: str, max_retry: int = 3) -> tuple[int, list[dict]]:
+    def _inference(
+        self, video_text: str, menu_name: str, max_retry: int = 3
+    ) -> tuple[int, list[dict]]:
         count = 0
         while count < max_retry:
             try:
-                if True:  # TODO: Fix validate logic
-                    return self._query_to_gemini(self.gemini, video_text)
+                return self._query_to_gemini(self.gemini, video_text, menu_name)
 
             except exceptions.InvalidArgument as e:
                 print(f"잘못된 인자: {e}")
@@ -137,10 +186,11 @@ class YoutubePreprocessor:
                 print(f"알 수 없는 오류 발생: {e}")
             finally:
                 count += 1
+                print(f"Retry count: {count}")
                 time.sleep(3)
         return None
 
-    def inference(self, video_text: str) -> tuple[int, list[dict]]:
-        gemini_output = self._inference(video_text)
+    def inference(self, video_text: str, menu_name: str) -> tuple[int, list[dict]]:
+        gemini_output = self._inference(video_text, menu_name)
         portions, ingredient_info = self.postprocess(gemini_output)
         return portions, ingredient_info

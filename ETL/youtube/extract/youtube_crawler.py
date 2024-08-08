@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 import googleapiclient.discovery
@@ -5,10 +7,12 @@ import googleapiclient.errors
 import psycopg2
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
+
+
+# from selenium.webdriver.chrome.service import Service
+# from webdriver_manager.chrome import ChromeDriverManager
 
 
 class YoutubeCrawler:
@@ -16,17 +20,16 @@ class YoutubeCrawler:
         self.GOOGLE_API_KEY = None
         self.youtube = None
         self.driver = None
+        load_dotenv("../../../resources/secret.env")
 
     def set_webdriver(self):
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        self.driver = webdriver.Chrome()
 
     def quit_webdriver(self):
         self.driver.quit()
 
     def set_youtube_api(self, n):
-        load_dotenv("../../../resources/secret.env")
         self.GOOGLE_API_KEY = os.getenv(f"GOOGLE_API_KEY{n}")
-
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = (
             "1"  # 보안 통신(SSL/TLS)을 사용하지 않고 HTTP를 통해 OAuth 인증을 수행.
         )
@@ -147,7 +150,3 @@ class YoutubeCrawler:
         except Exception as e:
             print(f"에러 발생 >> {e}")
             raise
-
-    def query_to_gemini(self, query_string):
-        response = self.gemini.generate_content(query_string)
-        return response.text

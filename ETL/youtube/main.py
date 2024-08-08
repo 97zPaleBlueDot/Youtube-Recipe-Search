@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import time
 
@@ -68,6 +70,7 @@ if __name__ == "__main__":
                 except Exception:
                     youtube_crawler.set_webdriver()
                     continue
+
                 time.sleep(0.01)
 
                 # 채널 관련 데이터
@@ -97,37 +100,33 @@ if __name__ == "__main__":
                 # 예시
                 # portions: int = 1
                 # ingredient_info: list[dict]
-                # [
-                #    {'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': ''},
-                #    {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': ''},
-                #    {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': ''},
-                #    {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금'},
-                #    {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': ''},
-                #    ...
-                # ]
-                portions, ingredient_info = youtube_preprocessor.inference(video_text)
+                # [{'ingredient': '주꾸미', 'quantity': 13, 'unit': '마리', 'vague': '', alternative_name: ''},
+                #  {'ingredient': '양파', 'quantity': 1, 'unit': '개', 'vague': '', alternative_name: ''},
+                #  {'ingredient': '대파', 'quantity': 1, 'unit': '개', 'vague': '', alternative_name: ''},
+                #  {'ingredient': '당근', 'quantity': 0, 'unit': '', 'vague': '조금', alternative_name: ''},
+                #  {'ingredient': '홍고추', 'quantity': 1, 'unit': '개', 'vague': '', alternative_name: '고추'},
+                #  ...]
+                print("*" * 80)
+                print(f"Gemini inference for video_title {video_title}")
+                print(f"Gemini inference for video_text {video_text}")
 
-                # db write 코드 작성
+                portions, ingredient_info = youtube_preprocessor.inference(
+                    video_text,
+                    menu_name,
+                )
+                print(f"portions: {portions}")
+                print(f"ingredient_info: {ingredient_info}")
+                print("*" * 80)
                 try:
-                    channel_id = youtube_loader.write_to_channel(
-                        name=channel_name,
-                        url=channel_link,
-                        subscribers_count=channel_subscribers_count,
-                        img_src=channel_img,
-                    )
-                    youtube_video_id = youtube_loader.write_to_youtube_video(
-                        channel_id=channel_id,
-                        title=video_title,
-                        url=video_link,
-                        thumbnail_src=video_thumbnail,
-                        views=video_views_count,
-                        thumbsup_count=video_thumbsup_count,
-                        uploaded_date=video_uploaded_date,
+                    youtube_vdo_id = youtube_loader.write_to_youtube_video(
+                        menu_id=menu_id,
+                        youtube_url=video_link,
+                        full_text=video_title,
                     )
                     recipe_id = youtube_loader.write_to_recipe(
-                        youtube_video_id=youtube_video_id,
+                        youtube_vdo_id=youtube_vdo_id,
                         menu_id=menu_id,
-                        full_text=video_text,
+                        portions=portions,
                     )
                     if ingredient_info:
                         for k in range(len(ingredient_info)):
@@ -135,11 +134,17 @@ if __name__ == "__main__":
                             quantity = ingredient_info[k]["quantity"]
                             unit = ingredient_info[k]["unit"]
                             vague = ingredient_info[k]["vague"]
-                            # TODO: db 쿼리 수정
-                            youtube_loader.write_to_ingredient(
-                                recipe_id=recipe_id,
+                            alternative_name = ingredient_info[k]["alternative_name"]
+
+                            ingredient_id = youtube_loader.write_to_ingredient(
                                 name=ingredient_name,
+                                quantity=quantity,
+                                unit=unit,
+                                vague=vague,
+                                recipe_id=recipe_id,
+                                alternative_name=alternative_name,
                             )
+
                 except Exception as e:
                     print(f"에러 발생 : {e}")
 
