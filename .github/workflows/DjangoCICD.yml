@@ -26,13 +26,13 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+        aws-region: ap-northeast-2
     
     - name: Upload to S3
       run: |
         aws s3 cp \
-          --region us-west-2 \
-          ./deploy-package.tgz s3://awsbucket.palebluedot.django/build/deploy-package.tgz
+          --region ap-northeast-2 \
+          ./deploy-package.tgz s3://awsbucket.palebluedot.django-deploy/build/deploy-package.tgz
     
     - name: Code Deploy
       run: |
@@ -41,4 +41,4 @@ jobs:
             --file-exists-behavior OVERWRITE \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name django-deploy-group \
-            --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/deploy-package.tgz
+            --s3-location bucket=awsbucket.palebluedot.django-deploy,bundleType=tgz,key=build/deploy-package.tgz
