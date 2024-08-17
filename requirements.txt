@@ -11,3 +11,4 @@ python-decouple
 pytz
 sqlparse
 typing_extensions
+django-cors-headers
