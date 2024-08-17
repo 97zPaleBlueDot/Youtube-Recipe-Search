@@ -1,5 +1,5 @@
 version: 0.0
-os: debian
+os: linux
 files:
   - source: /
     destination: /home/bitnami/Django # 배포할 디렉터리 경로
