@@ -37,8 +37,8 @@ jobs:
     - name: Code Deploy
       run: |
         aws deploy create-deployment \
-            --application-name django-deploy \
+            --application-name django-lightsail-app \
             --file-exists-behavior OVERWRITE \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --deployment-group-name store-be-codedeploy-group \
+            --deployment-group-name django-deploy-group \
             --s3-location bucket=awsbucket.palebluedot.django,bundleType=tgz,key=build/deploy-package.tgz
