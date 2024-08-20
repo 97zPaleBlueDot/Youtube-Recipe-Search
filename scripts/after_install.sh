@@ -39,8 +39,10 @@ mkdir -p $LOG_DIR
 
     # Django 서버 다시 시작
     echo "Starting Django server..."
-    sudo -E nohup $(which python) manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
+    sudo -E nohup python manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
     echo "Django server started."
+    PID=$(ps aux | grep 'manage.py runserver' | grep -v grep | awk '{print $2}')
+    echo "Found running Django server with PID: $PID"
 
     echo "===================================="
 } >> $LOG_FILE 2>&1
