@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # TAR 파일을 배포 디렉토리로 이동
-cd /home/bitnami/Django/jaringobi_be
-
+cd /opt/bitnami/BackEnd/jaringobi_be
+# active venv
+source .venv/bin/activate
 # 로그 폴더 경로 설정
 LOG_DIR="server_onoff_logs"
 LOG_FILE="$LOG_DIR/$(date '+%Y-%m-%d_%H-%M-%S').log"
