@@ -1,6 +1,5 @@
 annotated-types
 asgiref
-decouple
 Django
 django-cors-headers
 djangorestframework
