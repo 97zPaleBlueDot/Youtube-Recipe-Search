@@ -33,7 +33,7 @@ mkdir -p $LOG_DIR
 
     # Django 서버 다시 시작
     echo "Starting Django server..."
-    nohup python3 manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
+    nohup $(which python) manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
     echo "Django server started."
 
     echo "===================================="
