@@ -23,17 +23,20 @@ rank, rating_total_count, discount_rate 컬럼 없앰. */
 CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
     name VARCHAR(1024) UNIQUE NOT NULL,  -- 상품명
-    unit_price FLOAT,  -- 단위 가격
-    unit VARCHAR(32),  -- 단위명
+    product_title VARCHAR(1024), -- 실제상품명
+    unit_price FLOAT,  -- 단위명
+    unit_value VARCHAR(32),  -- 단위값
     url VARCHAR(2048),  -- 상품URL
     img_src VARCHAR(2048),  -- 이미지 URL
     badge_rocket VARCHAR(64),  -- 로켓배송 및 로켓프레시 여부
-    storage_method VARCHAR(128),  -- 저장 방식
+    unit VARCHAR(128),  -- 저장 방식
     expiration_date DATE,  -- 유통기한
     is_bulk BOOLEAN,  -- 묶음 상품 여부 (True면 묶음)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP);
+    deleted_at TIMESTAMP
+    
+    );
 
 CREATE TABLE IF NOT EXISTS youtube_vdo (
     id SERIAL PRIMARY KEY,
