@@ -30,7 +30,6 @@ CREATE TABLE IF NOT EXISTS product (
     url VARCHAR(2048),  -- 상품URL
     img_src VARCHAR(2048),  -- 이미지 URL
     badge_rocket VARCHAR(64),  -- 로켓배송 및 로켓프레시 여부
-    unit VARCHAR(128),  -- 저장 방식
     expiration_date DATE,  -- 유통기한
     is_bulk BOOLEAN,  -- 묶음 상품 여부 (True면 묶음)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
