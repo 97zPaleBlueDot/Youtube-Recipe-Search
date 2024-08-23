@@ -24,18 +24,16 @@ CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
     name VARCHAR(1024) UNIQUE NOT NULL,  -- 상품명
     product_title VARCHAR(1024), -- 실제상품명
-    unit_price FLOAT,  -- 단위명
-    unit_value VARCHAR(32),  -- 단위값
+    unit_price FLOAT,  -- 단위당 가격
+    unit_value FLOAT,  -- 단위값
+    unit_name VARCHAR(32), -- 단위명
     url VARCHAR(2048),  -- 상품URL
     img_src VARCHAR(2048),  -- 이미지 URL
     badge_rocket VARCHAR(64),  -- 로켓배송 및 로켓프레시 여부
     unit VARCHAR(128),  -- 저장 방식
     expiration_date DATE,  -- 유통기한
     is_bulk BOOLEAN,  -- 묶음 상품 여부 (True면 묶음)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP
-    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 CREATE TABLE IF NOT EXISTS youtube_vdo (
