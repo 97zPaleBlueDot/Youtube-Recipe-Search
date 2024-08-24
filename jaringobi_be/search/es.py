@@ -9,11 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ES URL
 es_host = config('ES_HOST')
 es_auth = HTTPBasicAuth(config('ES_ID'), config('ES_PW'))
-cert_file= config('ES_CERT_PATH')
+#cert_file= config('ES_CERT_PATH')
 
 def search_es(query):
     host = urljoin(es_host, 'food_idx/_search')
-    response = requests.post(host, json=query, auth=es_auth, verify=cert_file) # 인증정보 활성화 필요
+    response = requests.post(host, json=query, auth=es_auth) # 인증정보 활성화 필요
     
     if response.status_code == 200:
         return response.json()

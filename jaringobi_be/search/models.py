@@ -231,3 +231,11 @@ class CheapRecipe(models.Model):
     class Meta:
         managed = False
         db_table = 'cheap_recipe'
+
+class RequestLog(models.Model):
+    request_url = models.CharField(max_length=255)
+    http_method = models.CharField(max_length=10)
+    request_timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.url} - {self.method} - {self.timestamp}"
