@@ -126,9 +126,9 @@ class DjangoSession(models.Model):
 # PositiveIntegerField 도 있네... 전부 이거로 바꾸고 싶..
 class Ingredient(models.Model):
     id = models.AutoField(primary_key=True)
-    alternative = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
     recipe = models.ForeignKey('Recipe', related_name='ingredients', on_delete=models.DO_NOTHING)
-    cheapest_product_id = models.IntegerField(blank=True, null=True)
+    alternative_name = models.CharField(max_length=64, blank=True, null=True)
+    cheapest_product = models.OneToOneField('Product', models.DO_NOTHING)
     name = models.CharField(max_length=64)
     quantity = models.FloatField(blank=True, null=True)
     unit = models.CharField(max_length=32, blank=True, null=True)
@@ -155,17 +155,16 @@ class Menu(models.Model):
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=1024)
+    product_title = models.CharField(max_length=1024, blank=True, null=True)
     unit_price = models.FloatField(blank=True, null=True)
-    unit = models.CharField(max_length=32, blank=True, null=True)
+    unit_value = models.FloatField(blank=True, null=True)
+    unit_name = models.CharField(max_length=32, blank=True, null=True)
     url = models.CharField(max_length=2048, blank=True, null=True)
     img_src = models.CharField(max_length=2048, blank=True, null=True)
     badge_rocket = models.CharField(max_length=64, blank=True, null=True)
-    storage_method = models.CharField(max_length=128, blank=True, null=True)
     expiration_date = models.DateField(blank=True, null=True)
     is_bulk = models.BooleanField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)  # auto_now_add=True
-    updated_at = models.DateTimeField(blank=True, null=True)  # auto_now=True
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -186,7 +185,7 @@ class QuantityConversion(models.Model):
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
     youtube_vdo = models.OneToOneField('YoutubeVdo', models.DO_NOTHING)  # on_delete=models.CASCADE,
-    menu_id = models.IntegerField()
+    menu = models.OneToOneField('Menu', models.DO_NOTHING)
     portions = models.SmallIntegerField(blank=True, null=True)
 
     class Meta:
@@ -207,7 +206,7 @@ class UnitConversion(models.Model):
 
 class YoutubeVdo(models.Model):
     id = models.AutoField(primary_key=True)
-    menu_id = models.IntegerField()
+    menu = models.OneToOneField('Menu', models.DO_NOTHING)
     youtube_url = models.CharField(max_length=256)
     full_text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
