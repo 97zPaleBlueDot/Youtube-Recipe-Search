@@ -2,12 +2,22 @@ from rest_framework import serializers
 from .models import Ingredient, Product, Recipe, YoutubeVdo, CheapRecipe
 
 
+from rest_framework import serializers
+from .models import Ingredient, Recipe, CheapRecipe, Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        exclude = ("id", "name", "badge_rocket", "expiration_date", "is_bulk", "created_at",)
+
 # ModelSerializer 객체의 arguments들이 뭐가 더 있는지 보기.
 class IngredientSerializer(serializers.ModelSerializer):
+    cheapest_product = ProductSerializer(read_only=True)
+    
     class Meta:
         model = Ingredient
         # fields = "__all__"
-        exclude = ("id", "alternative",)
+        exclude = ("id", "alternative_name", "recipe",)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -15,7 +25,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        exclude = ("id", "menu_id",)
+        exclude = ("id", "menu", "youtube_vdo",)
 
 
 class CheapRecipeSerializer(serializers.ModelSerializer):
@@ -26,19 +36,3 @@ class CheapRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CheapRecipe
         exclude = ("id", "created_at", "updated_at",)
-
-
-"""
-ORM 라이브러리로 레시피 최저가 계산하는 코드 예시. 나중에 사용 가능
-def get_total_price(self, obj):
-        total = 0
-        for recipe_ingredient in RecipeIngredient.objects.filter(recipe=obj):
-            ingredient = recipe_ingredient.ingredient
-            try:
-                product = CheapestProduct.objects.get(ingredient_id=ingredient.id)
-                if product.unit_price and ingredient.quantity:
-                    total += ingredient.quantity * product.unit_price
-            except CheapestProduct.DoesNotExist:
-                pass
-        return total
-"""
