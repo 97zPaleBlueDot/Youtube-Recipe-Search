@@ -48,3 +48,6 @@ mkdir -p $LOG_DIR
 } >> $LOG_FILE 2>&1
 
 echo "Logs saved to $LOG_FILE"
+
+# # TAR 파일 압축 풀기
+# tar -xzf deploy-package.tgz
