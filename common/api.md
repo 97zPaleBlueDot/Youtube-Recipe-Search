@@ -86,16 +86,21 @@ UNEXPECTED(500, "This request cannot be processed.")
         "recipe": {
             "ingredients": [
                 {
-                    "cheapest_product_id": int,
+                    "cheapest_product": {
+                            "product_title": string,
+                            "unit_price": float,
+                            "unit_value": float,
+                            "unit_name": string,
+                            "url": string,
+                            "img_src": string
+                        },
                     "name": string,
                     "quantity": float,
                     "unit": string,
                     "vague": string,
-                    "recipe": int,  //id
                 },
             ],
             "portions": int,
-            "youtube_vdo": int //id
         },
         "menu": string,
         "youtube_url": string,
