@@ -232,6 +232,7 @@ class CheapRecipe(models.Model):
         managed = False
         db_table = 'cheap_recipe'
 
+
 class RequestLog(models.Model):
     request_url = models.CharField(max_length=255)
     http_method = models.CharField(max_length=10)

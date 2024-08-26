@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Ingredient, Product, Recipe, YoutubeVdo, CheapRecipe
+from .models import Ingredient, Product, Recipe, CheapRecipe
 
 
 from rest_framework import serializers
