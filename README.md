@@ -45,6 +45,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 *Just wait for loading contents .gif ......* <br>
+*기다려도 .gif가 로딩되지 않으면, [Full Demo Video](https://youtu.be/S_I5W2ftykc)를 참고해 주세요.* <br>
 ![for_readme](https://github.com/user-attachments/assets/d3f965b7-9d96-448b-b722-75d9dc141275)<br><br>
 
 ### 자린고비의 주요 특징과 효험
@@ -82,10 +83,6 @@
 <div align="center">
 <img width="90%" src="https://github.com/user-attachments/assets/ccd392df-434e-4caf-9e3a-b72fc4ab853e"/>
 </div>
-
-- 쿠팡, 유튜브 크롤링 데이터 파이프라인(Airflow): Microsoft Azure VM
-- API 서버, DB 서버: AWS Lightsail EC2 (2vCPU, 4GB RAM)
-- 검색 엔진(ElasticSearch): Vultr VM (4vCPU, 8GB RAM)
 
 _For more details, please refer to the [Documentation](https://palebluedot.gitbook.io/palebluedot-1/infra)_
 
