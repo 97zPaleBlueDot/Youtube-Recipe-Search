@@ -44,7 +44,6 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-*Just wait for loading contents .gif ......* <br>
 *기다려도 .gif가 로딩되지 않으면, [Full Demo Video](https://youtu.be/S_I5W2ftykc)를 참고해 주세요.* <br>
 ![for_readme](https://github.com/user-attachments/assets/d3f965b7-9d96-448b-b722-75d9dc141275)<br><br>
 
