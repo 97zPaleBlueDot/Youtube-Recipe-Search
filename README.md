@@ -24,9 +24,6 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="## 아이디어 배경">아이디어 배경</a></li>
-      </ul>
-      <ul>
         <li><a href="#주요-특징과-효험">주요 특징과 효험</a></li>
       </ul>
       <ul>
@@ -50,17 +47,13 @@
 *기다려도 .gif가 로딩되지 않으면, [Full Demo Video](https://youtu.be/S_I5W2ftykc)를 참고해 주세요.* <br>
 ![for_readme](https://github.com/user-attachments/assets/d3f965b7-9d96-448b-b722-75d9dc141275)<br><br>
 
-### 아이디어 배경
-취미로 요리 학원을 다니면서, 여러 새로운 사실을 알게 되었습니다.<br>
-
 <p align="center">
+취미로 요리 학원을 다니면서, 여러 새로운 사실을 알게 되었습니다.<br><br>
   <em>"대부분은 집밥이 사먹는 것보다 저렴하지만, 꼭 그런 건 아니구나."</em> <br>
-  <em>"(만개의 레시피 같은) 텍스트보다 (유튜브) 영상 레시피 수요가 훨씬 높구나."</em>
+  <em>"(만개의 레시피 같은) 텍스트보다 (유튜브) 영상 레시피 수요가 훨씬 높구나."</em> <br><br>
+<strong>자린고비</strong>는, 이러한 발견에서 출발했습니다.
 </p>
 
-<br>
-
-**자린고비**는, 이러한 발견에서 출발했습니다.
 <br><br>
 
 
@@ -101,8 +94,6 @@
 
 _For more details, please refer to the [Documentation](https://palebluedot.gitbook.io/palebluedot-1/infra)_
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ### 레시피 및 최저가 상품 정보 데이터 파이프라인
 <div align="center">
 <img width="90%" src="https://github.com/user-attachments/assets/54291971-5f8b-441c-a694-fce298c8fde0"/>
@@ -117,9 +108,9 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
   - Lampcook '음식 다국어사전'
 
 #### 2. 유튜브 레시피 정보 수집
-(1) **유튜브 검색**: Youtube Data API v3 호출 → `"메뉴명 + 레시피"` 검색 → 상위 10개 영상 링크 추출<br>
-(2) **크롤링 및 스크래핑**: Selenium 기반 웹 크롤링 → 영상 하단 `'더보기'` 정보 수집<br>
-(3) **Gemini로 데이터 전처리** <br>
+- **유튜브 검색**: Youtube Data API v3 호출 → `"메뉴명 + 레시피"` 검색 → 상위 10개 영상 링크 추출
+- **크롤링 및 스크래핑**: Selenium 기반 웹 크롤링 → 영상 하단 `'더보기'` 정보 수집
+- **Gemini로 데이터 전처리**
    - `1차 검증`: 검색한 음식명과 일치하는지 확인
    - 레시피 정보 확인: `'더보기'`에 레시피 정보가 포함된 경우, `재료명+양+단위(+대체 재료명)` 형식으로 전처리
    - `모호한 값 처리`: '조금', '적당량' 등의 모호한 값을 `양(float)+단위(string)`로 변환. 변환되지 않으면 최저가 레시피 후보에서 제외
@@ -146,8 +137,7 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 - [ ] Frontend 재개발
 - [ ] 양•단위 변환 값 추가 → 서비스되는 메뉴•레시피 종류 늘리기
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
+See the [open issues](https://github.com/97zPaleBlueDot/BackEnd/issues) for a full list of proposed features (and known issues).
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ## Acknowledgments
