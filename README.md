@@ -7,7 +7,7 @@
   </a> -->
 <h2 align="center">"자린고비"</h2>
   <p align="center">
-    최저가 요리 유튜브 레시피 검색 서비스 (24.03~)
+    최저가 요리 유튜브 레시피 검색 서비스 (24.02~03, 07~)
     <br />
     <a href="https://palebluedot.gitbook.io/palebluedot-1"><strong>Explore the development docs »</strong></a>
     <br />
@@ -24,7 +24,10 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#자린고비의-주요-특징과-효험">자린고비의 주요 특징과 효험</a></li>
+        <li><a href="## 아이디어 배경">아이디어 배경</a></li>
+      </ul>
+      <ul>
+        <li><a href="#주요-특징과-효험">주요 특징과 효험</a></li>
       </ul>
       <ul>
         <li><a href="#Main-Tech-Stack">Main Tech Stack</a></li>
@@ -32,12 +35,12 @@
     </li>
     <li><a href="#Feature-Description">Feature Description</a></li>
     <li>
-      <a href="#System-Architecture">System Architecture</a>
+      <a href="## System Architecture">System Architecture</a>
       <ul>
         <li><a href="#레시피-및-최저가-상품-정보-데이터-파이프라인">레시피 및 최저가 상품 정보 데이터 파이프라인</a></li>
       </ul>
     </li>
-    <li><a href="#Future-Roadmap">Future Roadmap</a></li>
+    <li><a href="## Future Roadmap">Future Roadmap</a></li>
   </ol>
 </details>
 
@@ -47,12 +50,17 @@
 *기다려도 .gif가 로딩되지 않으면, [Full Demo Video](https://youtu.be/S_I5W2ftykc)를 참고해 주세요.* <br>
 ![for_readme](https://github.com/user-attachments/assets/d3f965b7-9d96-448b-b722-75d9dc141275)<br><br>
 
-### 자린고비의 주요 특징과 효험
-- 텍스트 기반 요리 레시피가 아닌, `유튜브 영상 레시피 활용`을 위한 정보 가공
-- 음식점/편의점 판매 `요리의 원가 정보 제공`을 통한 <u>소비자 중심 경제적 편익 증진</u>
-- `온라인 전자상거래 구매 링크 연동`으로 재료를 찾거나 가격을 비교하는 데 드는 <u>시간 및 구매 비용 절약</u>
+### 아이디어 배경
+취미로 요리 학원을 다니면서, 여러 새로운 사실을 알게 되었습니다.<br>
+*"대부분은 집밥이 사먹는 것보다 저렴하지만, 꼭 그런 건 아니구나."*<br>
+*"(만개의 레시피 같은) 텍스트보다 (유튜브) 영상 레시피 수요가 훨씬 높구나."*<br>
+"자린고비"는, 이러한 발견에서 출발했습니다.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### 주요 특징과 효험
+- 텍스트 기반 요리 레시피가 아닌, `유튜브 영상 레시피 활용`을 위한 정보 가공
+- 음식점/편의점 판매 `요리의 원가 정보 제공`을 통한 <u>소비자 중심 경제적 편익 증진
+- `온라인 전자상거래 구매 링크 연동`으로 재료를 찾거나 가격을 비교하는 데 드는 <u>시간 및 구매 비용 절약</u>
 
 
 ### Main Tech Stack
@@ -107,13 +115,13 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 (3) **Gemini로 데이터 전처리** <br>
    - `1차 검증`: 검색한 음식명과 일치하는지 확인
    - 레시피 정보 확인: `'더보기'`에 레시피 정보가 포함된 경우, `재료명+양+단위(+대체 재료명)` 형식으로 전처리
-   - 모호한 값 처리: '조금', '적당량' 등의 모호한 값을 `양(float)+단위(string)`로 변환. 변환되지 않으면 최저가 레시피 후보에서 제외
+   - `모호한 값 처리`: '조금', '적당량' 등의 모호한 값을 `양(float)+단위(string)`로 변환. 변환되지 않으면 최저가 레시피 후보에서 제외
 
 #### 3. 재료별 최저가 상품 정보 수집
 - `24시간 주기 갱신`: Airflow로 배치 작업 자동화
 - `최저가 상품 선별`: 쿠팡에서 재료명 검색 → 단위 가격 비교 후 최저가 상품 1개 저장 (검색 옵션: ‘쿠팡추천순’, ‘로켓배송/로켓프레시’ 필수)
 
-### 4. 최저가 레시피 정보 업데이트
+#### 4. 최저가 레시피 정보 업데이트
 - `24시간 주기 갱신`: Airflow로 배치 작업 자동화
 - `최저가 계산`: 재료별 단위 가격 × 레시피 사용량 → 레시피 총 가격 산출
 - `최저가 레시피 선정`: 최대 10개의 레시피 가격을 비교해 최저가 레시피 선정
