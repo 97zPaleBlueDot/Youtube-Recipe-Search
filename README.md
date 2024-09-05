@@ -12,14 +12,9 @@
     <a href="https://palebluedot.gitbook.io/palebluedot-1"><strong>Explore the development docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/97zPaleBlueDot/Client/blob/main/resource/demo_gif.gif">View Demo</a>
-    ·
-    <a href="https://github.com/97zPaleBlueDot/Youtube-Recipe-Search/issues/new?labels=bug&template=bug_report.md">Report Bug</a>
-    ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature_request.md">Request Feature</a>
+    <a href="https://github.com/97zPaleBlueDot/Client/blob/main/resource/demo_gif.gif">View Full Demo</a>
   </p>
 </div>
-
 
 
 <!-- TABLE OF CONTENTS -->
@@ -29,27 +24,25 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#자린고비의-주요-특징과-효험">자린고비의 주요 특징과 효험</a></li>
       </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#Main-Tech-Stack">Main Tech Stack</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#Feature-Description">Feature Description</a></li>
+    <li>
+      <a href="#System-Architecture">System Architecture</a>
+      <ul>
+        <li><a href="#레시피-및-최저가-상품-정보-데이터-파이프라인">레시피 및 최저가 상품 정보 데이터 파이프라인</a></li>
+      </ul>
+    </li>
+    <li><a href="#Future-Roadmap">Future Roadmap</a></li>
   </ol>
 </details>
 
 
-
+<!-- ABOUT THE PROJECT -->
 ## About The Project
 ![for_readme](https://github.com/user-attachments/assets/d3f965b7-9d96-448b-b722-75d9dc141275)<br><br>
 
@@ -61,16 +54,16 @@
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Main Tech Stack
-
 * Frontend: ![Retool][Retool]![Javascript][Javascript]![JQuery][JQuery.com]
 * Backend: ![Django][Django]![ElasticSearch][ElasticSearch]
 * Data Pipeline: ![Airflow][Airflow]![Gemini][Gemini]
 * RDB: ![postgresql][postgresql]
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+<!-- Feature Description -->
 ## Feature Description
 - 🔍 요리 영상(유튜브) 레시피 검색
 - 📉🤑 최신 소매가를 반영해, 최저 비용으로 요리 가능한 영상(유튜브) 레시피(재료, 단위, 양) 정보 제공
@@ -79,9 +72,11 @@
 - 🏪 24시간 단위로 최저가 상품, 최저가 레시피 정보 갱신
 - 📊 사용자 검색 로그 적재
 - 🆕 신메뉴 및 레시피 정보 지속적 업데이트
-<br>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+<!-- System Architecture -->
 ## System Architecture
 ![palebluedot_architect](https://github.com/user-attachments/assets/ccd392df-434e-4caf-9e3a-b72fc4ab853e)
 - 쿠팡, 유튜브 크롤링 데이터 파이프라인(Airflow): Microsoft Azure VM
@@ -134,6 +129,7 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+<!-- Future Roadmap -->
 ## Future Roadmap
 - [ ] 시스템, 유저 대시보드 추가
 - [ ] 레시피 2개 이상 보여주기 (최저가순)
