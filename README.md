@@ -12,7 +12,7 @@
     <a href="https://palebluedot.gitbook.io/palebluedot-1"><strong>Explore the development docs »</strong></a>
     <br />
     <br />
-    <a href="https://youtu.be/S_I5W2ftykc">View Full Demo</a>
+    👉🏻<a href="https://youtu.be/S_I5W2ftykc">Watch Full Demo Video</a>
   </p>
 </div>
 
@@ -44,6 +44,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+*Just wait for loading contents .gif ......* <br>
 ![for_readme](https://github.com/user-attachments/assets/d3f965b7-9d96-448b-b722-75d9dc141275)<br><br>
 
 ### 자린고비의 주요 특징과 효험
