@@ -22,25 +22,25 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#About The Project">About The Project</a>
       <ul>
-        <li><a href="## 아이디어 배경">아이디어 배경</a></li>
+        <li><a href="#아이디어-배경">아이디어 배경</a></li>
       </ul>
       <ul>
         <li><a href="#주요-특징과-효험">주요 특징과 효험</a></li>
       </ul>
       <ul>
-        <li><a href="#Main-Tech-Stack">Main Tech Stack</a></li>
+        <li><a href="#Main Tech Stack">Main Tech Stack</a></li>
       </ul>
     </li>
-    <li><a href="#Feature-Description">Feature Description</a></li>
+    <li><a href="#Feature Description">Feature Description</a></li>
     <li>
-      <a href="## System Architecture">System Architecture</a>
+      <a href="#System Architecture">System Architecture</a>
       <ul>
         <li><a href="#레시피-및-최저가-상품-정보-데이터-파이프라인">레시피 및 최저가 상품 정보 데이터 파이프라인</a></li>
       </ul>
     </li>
-    <li><a href="## Future Roadmap">Future Roadmap</a></li>
+    <li><a href="#Future Roadmap">Future Roadmap</a></li>
   </ol>
 </details>
 
@@ -52,16 +52,23 @@
 
 ### 아이디어 배경
 취미로 요리 학원을 다니면서, 여러 새로운 사실을 알게 되었습니다.<br>
-*"대부분은 집밥이 사먹는 것보다 저렴하지만, 꼭 그런 건 아니구나."*<br>
-*"(만개의 레시피 같은) 텍스트보다 (유튜브) 영상 레시피 수요가 훨씬 높구나."*<br>
-"자린고비"는, 이러한 발견에서 출발했습니다.
+
+<p align="center">
+  <em>"대부분은 집밥이 사먹는 것보다 저렴하지만, 꼭 그런 건 아니구나."</em> <br>
+  <em>"(만개의 레시피 같은) 텍스트보다 (유튜브) 영상 레시피 수요가 훨씬 높구나."</em>
+</p>
+
+<br>
+
+**자린고비**는, 이러한 발견에서 출발했습니다.
+<br><br>
 
 
 ### 주요 특징과 효험
 - 텍스트 기반 요리 레시피가 아닌, `유튜브 영상 레시피 활용`을 위한 정보 가공
-- 음식점/편의점 판매 `요리의 원가 정보 제공`을 통한 <u>소비자 중심 경제적 편익 증진
-- `온라인 전자상거래 구매 링크 연동`으로 재료를 찾거나 가격을 비교하는 데 드는 <u>시간 및 구매 비용 절약</u>
-
+- 음식점/편의점 판매 `요리의 원가 정보 제공`을 통한 소비자 중심 경제적 편익 증진
+- `온라인 전자상거래 구매 링크 연동`으로 재료를 찾거나 가격을 비교하는 데 드는 시간 및 구매 비용 절약
+<br><br>
 
 ### Main Tech Stack
 * Frontend: ![Retool][Retool]![Javascript][Javascript]![JQuery][JQuery.com]
