@@ -60,6 +60,7 @@
 * Backend: ![Django][Django]![ElasticSearch][ElasticSearch]
 * Data Pipeline: ![Airflow][Airflow]![Gemini][Gemini]
 * RDB: ![postgresql][postgresql]
+* Infra: ![Terraform][Terraform]![githubactions][githubactions]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -92,36 +93,30 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 <img width="90%" src="https://github.com/user-attachments/assets/54291971-5f8b-441c-a694-fce298c8fde0"/>
 </div>
 
-#### 1) 기본 음식명•재료명 데이터 수집
-- 최초 유튜브 레시피 기반 확보
-- 공공 API 호출 크롤링
-- 11,575건 중 153건의 음식명 데이터 선별 후 저장, 활용
+#### 1. 기본 음식명·재료명 데이터 수집
+- **최초 데이터 확보**: 유튜브 레시피 기반
+- **공공 API 크롤링**: 음식명 데이터 선별 및 저장 (11,575건 중 153건)
 - 데이터 출처
-  - 식품의약품안전처 ‘식품영양성분 데이터베이스’
-  - 소스산업화센터 ‘소스 레시피 DB’
-  - Lampcook ‘음식 다국어사전’
-<br>
+  - 식품의약품안전처 '식품영양성분 데이터베이스'
+  - 소스산업화센터 '소스 레시피 DB'
+  - Lampcook '음식 다국어사전'
 
-#### 2) 영상(유튜브) 레시피 정보 수집
-(1) 유튜브 검색 공개 API인 Youtube Data API v3 호출 → “메뉴명 + 레시피” 검색 → 상위 10개 영상 링크 추출<br>
-(2) selenium 기반 웹 크롤링, 영상 하단 ‘더보기' 정보 스크래핑<br>
-(3) 프롬프트와 Gemini API 를 적용한 ‘더보기' 정보 전처리<br>
-검색했던 음식명과 일치하는 음식의 레시피가 맞는지 1차 검증<br>
-→ ’더보기'에 기재된 텍스트 내 레시피 정보 포함 여부 확인<br>
-→ 포함 시, 재료명+양+단위(+대체 재료명) 또는 재료명+모호한 값(+대체 재료명) 조합 목록으로 전처리된 데이터 반환 (*모호한 값: ‘조금', ‘적당량', ‘많이' 등)<br>
-→ 모호한 값은 양(float)+단위(string) 값으로 변환 (변환 정보 누락 시 최저가 레시피 후보로 포함하지 않음)<br>
+#### 2. 유튜브 레시피 정보 수집
+1) **유튜브 검색**: Youtube Data API v3 호출 → "메뉴명 + 레시피" 검색 → 상위 10개 영상 링크 추출<br>
+2) **크롤링 및 스크래핑**: Selenium 기반 웹 크롤링 → 영상 하단 ‘더보기’ 정보 수집<br>
+3) **Gemini로 데이터 전처리** <br>
+   - **1차 검증**: 검색한 음식명과 일치하는지 확인
+   - **레시피 정보 확인**: ‘더보기’에 레시피 정보가 포함된 경우, 재료명+양+단위(+대체 재료명) 형식으로 전처리
+   - **모호한 값 처리**: ‘조금’, ‘적당량’ 등의 모호한 값을 양(float)+단위(string)으로 변환. 변환되지 않으면 최저가 레시피 후보에서 제외
 
+#### 3. 재료별 최저가 상품 정보 수집
+- **24시간 주기 갱신**: Airflow로 배치 작업 자동화
+- **최저가 상품 선별**: 쿠팡에서 재료명 검색 → 단위 가격 비교 후 최저가 상품 1개 저장 (검색 옵션: ‘쿠팡추천순’, ‘로켓배송/로켓프레시’ 필수)
 
-#### 3) 재료별 최저가 상품 정보 수집(갱신)
-- Airflow 를 통해 24시간 주기로 값 갱신 배치 작업
-- '2)' 에서 확보된 재료명을 쿠팡(coupang.com)에 검색해 최저가 상품 1개만 선별 저장 (사이트에 기재된 단위 가격을 비교, 수집)
-- 쿠팡 검색 시, 정렬은 ‘쿠팡추천순', 그외 ‘로켓배송/로켓프레시’ 옵션 필수 설정
-
-
-#### 4) 최저가 레시피 정보 업데이트
-- Airflow 를 통해 24시간 주기로 값 갱신 배치 작업
-- 재료별로 최저가 정보에서 추출한 단위 가격과 레시피에 사용된 양∙단위 정보를 곱하고, 총합한 값을 레시피 가격으로 정의
-- 최대 10개의 레시피 총 가격을 비교해 최저가 레시피 선정
+### 4. 최저가 레시피 정보 업데이트
+- **24시간 주기 갱신**: Airflow로 배치 작업 자동화
+- **최저가 계산**: 재료별 단위 가격 × 레시피 사용량 → 레시피 총 가격 산출
+- **최저가 레시피 선정**: 최대 10개의 레시피 가격을 비교해 최저가 레시피 선정
 <!-- * npm
   ```sh
   npm install npm@latest -g
@@ -158,3 +153,5 @@ See the [open issues](https://github.com/github_username/repo_name/issues) for a
 [Javascript]: https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white
 [postgresql]: https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[Terraform]: https://img.shields.io/badge/terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white
+[githubactions]: https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white
