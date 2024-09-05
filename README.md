@@ -12,7 +12,7 @@
     <a href="https://palebluedot.gitbook.io/palebluedot-1"><strong>Explore the development docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/97zPaleBlueDot/Client/blob/main/resource/demo_gif.gif">View Full Demo</a>
+    <a href="https://youtu.be/S_I5W2ftykc">View Full Demo</a>
   </p>
 </div>
 
