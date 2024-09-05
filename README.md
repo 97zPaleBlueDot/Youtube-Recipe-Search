@@ -22,25 +22,25 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#About The Project">About The Project</a>
+      <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#아이디어-배경">아이디어 배경</a></li>
+        <li><a href="## 아이디어 배경">아이디어 배경</a></li>
       </ul>
       <ul>
         <li><a href="#주요-특징과-효험">주요 특징과 효험</a></li>
       </ul>
       <ul>
-        <li><a href="#Main Tech Stack">Main Tech Stack</a></li>
+        <li><a href="#Main-Tech-Stack">Main Tech Stack</a></li>
       </ul>
     </li>
-    <li><a href="#Feature Description">Feature Description</a></li>
+    <li><a href="#Feature-Description">Feature Description</a></li>
     <li>
-      <a href="#System Architecture">System Architecture</a>
+      <a href="## System Architecture">System Architecture</a>
       <ul>
         <li><a href="#레시피-및-최저가-상품-정보-데이터-파이프라인">레시피 및 최저가 상품 정보 데이터 파이프라인</a></li>
       </ul>
     </li>
-    <li><a href="#Future Roadmap">Future Roadmap</a></li>
+    <li><a href="## Future Roadmap">Future Roadmap</a></li>
   </ol>
 </details>
 
