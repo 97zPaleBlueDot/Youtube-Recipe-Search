@@ -125,6 +125,8 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 - `24시간 주기 갱신`: Airflow로 배치 작업 자동화
 - `최저가 계산`: 재료별 단위 가격 × 레시피 사용량 → 레시피 총 가격 산출
 - `최저가 레시피 선정`: 최대 10개의 레시피 가격을 비교해 최저가 레시피 선정
+
+_For more details, please refer to the [Documentation](https://palebluedot.gitbook.io/palebluedot-1/dataengineering)_
 <!-- * npm
   ```sh
   npm install npm@latest -g
@@ -138,8 +140,6 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 - [ ] 레시피 2개 이상 보여주기 (최저가순)
 - [ ] Frontend 재개발
 - [ ] 양•단위 변환 값 추가 → 서비스되는 메뉴•레시피 종류 늘리기
-
-See the [open issues](https://github.com/97zPaleBlueDot/BackEnd/issues) for a full list of proposed features (and known issues).
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ## Acknowledgments
