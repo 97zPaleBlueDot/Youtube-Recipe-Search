@@ -93,6 +93,7 @@
 </div>
 
 _For more details, please refer to the [Documentation](https://palebluedot.gitbook.io/palebluedot-1/infra)_
+<br><br>
 
 ### 레시피 및 최저가 상품 정보 데이터 파이프라인
 <div align="center">
