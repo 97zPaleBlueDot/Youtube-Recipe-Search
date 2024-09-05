@@ -6,8 +6,9 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a> -->
 <h2 align="center">"자린고비"</h2>
+<h4 align="center">최저가 요리 유튜브 레시피 검색 서비스 (24.02~03, 07~)</h4>
   <p align="center">
-    최저가 요리 유튜브 레시피 검색 서비스 (24.02~03, 07~)
+    2024 공개SW 개발자대회 출품작
     <br />
     <a href="https://palebluedot.gitbook.io/palebluedot-1"><strong>Explore the development docs »</strong></a>
     <br />
