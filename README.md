@@ -93,7 +93,7 @@
 <img width="90%" src="https://github.com/user-attachments/assets/ccd392df-434e-4caf-9e3a-b72fc4ab853e"/>
 </div>
 
-_For more details, please refer to the [Documentation](https://palebluedot.gitbook.io/palebluedot-1/infra)_
+_For more details, please refer to the [Infra Documentation](https://palebluedot.gitbook.io/palebluedot-1/infra)_
 <br><br>
 
 ### 레시피 및 최저가 상품 정보 데이터 파이프라인
@@ -126,7 +126,7 @@ _For more details, please refer to the [Documentation](https://palebluedot.gitbo
 - `최저가 계산`: 재료별 단위 가격 × 레시피 사용량 → 레시피 총 가격 산출
 - `최저가 레시피 선정`: 최대 10개의 레시피 가격을 비교해 최저가 레시피 선정
 
-_For more details, please refer to the [Documentation](https://palebluedot.gitbook.io/palebluedot-1/dataengineering)_
+_For more details, please refer to the [Data Engineering Documentation](https://palebluedot.gitbook.io/palebluedot-1/dataengineering)_
 <!-- * npm
   ```sh
   npm install npm@latest -g
