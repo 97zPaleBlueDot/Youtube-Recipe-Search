@@ -1,12 +1,11 @@
 <a id="readme-top"></a>
-
 <!-- PROJECT LOGO -->
-<br />
+<!-- <br /> -->
 <!-- <div align="center">
   <a href="https://github.com/github_username/repo_name">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a> -->
-<h3 align="center">"자린고비"</h3>
+<h2 align="center">"자린고비"</h2>
   <p align="center">
     최저가 요리 유튜브 레시피 검색 서비스 (24.03~)
     <br />
