@@ -13,7 +13,7 @@
     <a href="https://palebluedot.gitbook.io/palebluedot-1"><strong>Explore the development docs »</strong></a>
     <br />
     <br />
-    👉🏻<a href="https://palebluedot97z.retool.com/app/main">Try Demo Service Now!</a>
+    👉🏻<a href="https://palebluedot97z.retool.com/p/main">Try Demo Service Now!</a>
   </p>
 </div>
 
